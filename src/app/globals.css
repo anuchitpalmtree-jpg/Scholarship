@@ -16,6 +16,11 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  position: relative;
+}
+
+.app-root {
+  isolation: isolate;
 }
 
 button,

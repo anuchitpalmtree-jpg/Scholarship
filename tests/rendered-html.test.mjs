@@ -37,18 +37,25 @@ test("server-renders the GovFund Match landing page", async () => {
 });
 
 test("keeps the requested GovFund mock data in the app source", async () => {
-  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const page = await readFile(
+    new URL("../src/app/page.tsx", import.meta.url),
+    "utf8",
+  );
+  const demoData = await readFile(
+    new URL("../src/data/govfund-demo-data.ts", import.meta.url),
+    "utf8",
+  );
   const layout = await readFile(
-    new URL("../app/layout.tsx", import.meta.url),
+    new URL("../src/app/layout.tsx", import.meta.url),
     "utf8",
   );
 
-  assert.match(page, /คุณดนัย นักประดิษฐ์/);
-  assert.match(page, /บริษัท อกริเทค จำกัด/);
-  assert.match(page, /กองทุนส่งเสริมการอนุรักษ์พลังงาน/);
-  assert.match(page, /ทุนสนับสนุนนวัตกรรม วว\. \(TISTR\)/);
-  assert.match(page, /ทุนวิจัยด้านการแพทย์ TCELS/);
-  assert.match(page, /ติดตามสถานะการขอทุน/);
+  assert.match(page, /GovFundMatchApp/);
+  assert.match(demoData, /คุณดนัย นักประดิษฐ์/);
+  assert.match(demoData, /บริษัท อกริเทค จำกัด/);
+  assert.match(demoData, /กองทุนส่งเสริมการอนุรักษ์พลังงาน/);
+  assert.match(demoData, /ทุนสนับสนุนนวัตกรรม วว\. \(TISTR\)/);
+  assert.match(demoData, /ทุนวิจัยด้านการแพทย์ TCELS/);
   assert.match(layout, /lang="th"/);
   assert.doesNotMatch(layout, /Starter Project|codex-preview|_sites-preview/);
 });

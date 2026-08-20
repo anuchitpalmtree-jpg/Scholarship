@@ -1,75 +1,23 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 
-type Screen = "landing" | "dashboard" | "apply" | "status";
-
-type Fund = {
-  id: number;
-  title: string;
-  matchScore: number;
-  tags: string[];
-  agency: string;
-};
-
-const mockData = {
-  user: {
-    name: "คุณดนัย นักประดิษฐ์",
-    company: "บริษัท อกริเทค จำกัด",
-    registrationNo: "010555XXXXXXX",
-    address:
-      "88/12 อาคารนวัตกรรมเกษตร ถนนพหลโยธิน แขวงลาดยาว เขตจตุจักร กรุงเทพฯ 10900",
-  },
-  funds: [
-    {
-      id: 1,
-      title: "กองทุนส่งเสริมการอนุรักษ์พลังงาน",
-      matchScore: 95,
-      tags: ["พลังงาน", "SME"],
-      agency: "กระทรวงพลังงาน",
-    },
-    {
-      id: 2,
-      title: "ทุนสนับสนุนนวัตกรรม วว. (TISTR)",
-      matchScore: 80,
-      tags: ["นวัตกรรมเกษตร", "วิจัย"],
-      agency: "กระทรวง อว.",
-    },
-    {
-      id: 3,
-      title: "ทุนวิจัยด้านการแพทย์ TCELS",
-      matchScore: 45,
-      tags: ["ชีววิทยาศาสตร์"],
-      agency: "ศูนย์ความเป็นเลิศด้านชีววิทยาศาสตร์",
-    },
-  ],
-};
-
-const applications = [
-  {
-    title: "ระบบอบแห้งพลังงานแสงอาทิตย์",
-    fund: "กองทุนอนุรักษ์พลังงาน",
-    status: "กำลังพิจารณา (Under Review)",
-    tone: "amber",
-    date: "20 Aug 2026",
-    progress: 58,
-  },
-  {
-    title: "สารสกัดสมุนไพร",
-    fund: "วว.",
-    status: "ขอเอกสารเพิ่มเติม (Action Required)",
-    tone: "red",
-    date: "12 Aug 2026",
-    progress: 34,
-  },
-];
+import { govFundDemoData } from "@/src/data/govfund-demo-data";
+import {
+  matchBadgeClasses,
+  progressBarClasses,
+  statusBadgeClasses,
+  statusMarker,
+} from "@/src/lib/govfund-display";
+import type { Fund, GovFundScreen } from "@/src/types/govfund";
+import { SuccessDialog } from "@/src/components/ui/SuccessDialog";
 
 function AppHeader({
   screen,
   onNavigate,
 }: {
-  screen: Screen;
-  onNavigate: (screen: Screen) => void;
+  screen: GovFundScreen;
+  onNavigate: (screen: GovFundScreen) => void;
 }) {
   const signedIn = screen !== "landing";
 
@@ -246,7 +194,12 @@ function Dashboard({
   onMatch: () => void;
   onApply: (fund: Fund) => void;
 }) {
-  const suggestedFunds = useMemo(() => mockData.funds, []);
+  const actionRequiredCount = govFundDemoData.applications.filter(
+    (application) => application.tone === "red",
+  ).length;
+  const topMatch = Math.max(
+    ...govFundDemoData.funds.map((fund) => fund.matchScore),
+  );
 
   return (
     <main className="bg-slate-50">
@@ -254,12 +207,29 @@ function Dashboard({
         <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
           <p className="text-sm font-semibold text-slate-500">Dashboard</p>
           <h1 className="mt-2 text-2xl font-bold text-slate-950 sm:text-3xl">
-            สวัสดี {mockData.user.name} (SME: {mockData.user.company})
+            สวัสดี {govFundDemoData.user.name} (SME:{" "}
+            {govFundDemoData.user.company})
           </h1>
           <p className="mt-3 max-w-3xl leading-7 text-slate-600">
             อธิบายแนวคิดโครงการของคุณ แล้วระบบจะจำลองการจับคู่ทุนที่เหมาะสมตามหมวด
             หน่วยงาน และเงื่อนไขเบื้องต้น
           </p>
+        </div>
+
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
+          {[
+            ["ทุนที่เปิดจับคู่", `${govFundDemoData.funds.length} รายการ`],
+            ["คะแนนเหมาะสมสูงสุด", `${topMatch}%`],
+            ["ต้องดำเนินการ", `${actionRequiredCount} รายการ`],
+          ].map(([label, value]) => (
+            <div
+              key={label}
+              className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+            >
+              <p className="text-sm font-semibold text-slate-500">{label}</p>
+              <p className="mt-2 text-2xl font-bold text-slate-950">{value}</p>
+            </div>
+          ))}
         </div>
 
         <section className="mt-6 rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
@@ -303,18 +273,16 @@ function Dashboard({
 
         {hasMatched ? (
           <section className="mt-6">
-            <div className="mb-4 flex items-center justify-between gap-4">
-              <div>
-                <p className="text-sm font-semibold text-[#1E3A8A]">
-                  Recommended Funds
-                </p>
-                <h2 className="text-xl font-bold text-slate-950">
-                  ทุนที่เหมาะสมกับแนวคิดของคุณ
-                </h2>
-              </div>
+            <div className="mb-4">
+              <p className="text-sm font-semibold text-[#1E3A8A]">
+                Recommended Funds
+              </p>
+              <h2 className="text-xl font-bold text-slate-950">
+                ทุนที่เหมาะสมกับแนวคิดของคุณ
+              </h2>
             </div>
             <div className="grid gap-4 lg:grid-cols-3">
-              {suggestedFunds.map((fund) => (
+              {govFundDemoData.funds.map((fund) => (
                 <article
                   key={fund.id}
                   className="flex min-h-[260px] flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
@@ -329,13 +297,9 @@ function Dashboard({
                       </h3>
                     </div>
                     <span
-                      className={`shrink-0 rounded-full px-3 py-1 text-sm font-bold ${
-                        fund.matchScore >= 90
-                          ? "bg-emerald-50 text-emerald-700"
-                          : fund.matchScore >= 70
-                            ? "bg-blue-50 text-[#1E3A8A]"
-                            : "bg-slate-100 text-slate-600"
-                      }`}
+                      className={`shrink-0 rounded-full px-3 py-1 text-sm font-bold ${matchBadgeClasses(
+                        fund.matchScore,
+                      )}`}
                     >
                       {fund.matchScore}%
                     </span>
@@ -429,13 +393,19 @@ function ApplicationForm({
             (Auto-filled)
           </div>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            <ReadOnlyField label="ชื่อ-นามสกุล" value={mockData.user.name} />
-            <ReadOnlyField label="ชื่อบริษัท" value={mockData.user.company} />
+            <ReadOnlyField
+              label="ชื่อ-นามสกุล"
+              value={govFundDemoData.user.name}
+            />
+            <ReadOnlyField
+              label="ชื่อบริษัท"
+              value={govFundDemoData.user.company}
+            />
             <ReadOnlyField
               label="เลขทะเบียนนิติบุคคล"
-              value={mockData.user.registrationNo}
+              value={govFundDemoData.user.registrationNo}
             />
-            <ReadOnlyField label="ที่อยู่" value={mockData.user.address} />
+            <ReadOnlyField label="ที่อยู่" value={govFundDemoData.user.address} />
           </div>
         </section>
 
@@ -517,7 +487,7 @@ function StatusDashboard() {
             </h1>
           </div>
           <span className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600">
-            {applications.length} applications
+            {govFundDemoData.applications.length} applications
           </span>
         </div>
 
@@ -529,7 +499,7 @@ function StatusDashboard() {
             <span>Submitted Date</span>
           </div>
           <div className="divide-y divide-slate-200">
-            {applications.map((application) => (
+            {govFundDemoData.applications.map((application) => (
               <article
                 key={application.title}
                 className="grid gap-4 px-5 py-5 md:grid-cols-[1.5fr_1fr_1.1fr_0.8fr] md:items-center"
@@ -540,25 +510,20 @@ function StatusDashboard() {
                   </p>
                   <div className="mt-3 h-2 max-w-sm rounded-full bg-slate-100">
                     <div
-                      className={`h-2 rounded-full ${
-                        application.tone === "amber"
-                          ? "bg-amber-400"
-                          : "bg-red-500"
-                      }`}
+                      className={`h-2 rounded-full ${progressBarClasses(
+                        application.tone,
+                      )}`}
                       style={{ width: `${application.progress}%` }}
                     />
                   </div>
                 </div>
                 <p className="text-slate-600">{application.fund}</p>
                 <span
-                  className={`w-fit rounded-full px-3 py-1 text-sm font-bold ${
-                    application.tone === "amber"
-                      ? "bg-amber-50 text-amber-800"
-                      : "bg-red-50 text-red-700"
-                  }`}
+                  className={`w-fit rounded-full px-3 py-1 text-sm font-bold ${statusBadgeClasses(
+                    application.tone,
+                  )}`}
                 >
-                  {application.tone === "amber" ? "🟡" : "🔴"}{" "}
-                  {application.status}
+                  {statusMarker(application.tone)} {application.status}
                 </span>
                 <p className="text-sm font-semibold text-slate-500">
                   {application.date}
@@ -572,45 +537,17 @@ function StatusDashboard() {
   );
 }
 
-function SuccessModal({ onClose }: { onClose: () => void }) {
-  return (
-    <div
-      className="fixed inset-0 z-50 grid place-items-center bg-slate-950/50 p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="success-title"
-    >
-      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
-        <div className="grid h-12 w-12 place-items-center rounded-full bg-emerald-50 text-xl">
-          ✅
-        </div>
-        <h2 id="success-title" className="mt-4 text-2xl font-bold text-slate-950">
-          ส่งใบสมัครสำเร็จ
-        </h2>
-        <p className="mt-3 leading-7 text-slate-600">
-          ระบบได้รับข้อมูลการขอทุนแล้ว และสร้างรายการติดตามสถานะในแดชบอร์ดของคุณ
-        </p>
-        <button
-          type="button"
-          onClick={onClose}
-          className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-[#1E3A8A] px-5 py-3 font-bold text-white hover:bg-blue-950 focus:outline-none focus:ring-4 focus:ring-blue-200"
-        >
-          ไปหน้าติดตามสถานะ
-        </button>
-      </div>
-    </div>
-  );
-}
-
-export default function Home() {
-  const [screen, setScreen] = useState<Screen>("landing");
+export function GovFundMatchApp() {
+  const [screen, setScreen] = useState<GovFundScreen>("landing");
   const [idea, setIdea] = useState("");
   const [hasMatched, setHasMatched] = useState(false);
-  const [selectedFund, setSelectedFund] = useState<Fund>(mockData.funds[0]);
+  const [selectedFund, setSelectedFund] = useState<Fund>(
+    govFundDemoData.funds[0],
+  );
   const [showSuccess, setShowSuccess] = useState(false);
   const [draftSaved, setDraftSaved] = useState(false);
 
-  function navigate(nextScreen: Screen) {
+  function navigate(nextScreen: GovFundScreen) {
     setScreen(nextScreen);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -667,7 +604,7 @@ export default function Home() {
         </div>
       ) : null}
 
-      {showSuccess ? <SuccessModal onClose={() => setShowSuccess(false)} /> : null}
+      <SuccessDialog open={showSuccess} onOpenChange={setShowSuccess} />
     </div>
   );
 }
