@@ -1,610 +1,93 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
+import { AlertTriangle, ArrowRight, Bell, Bot, Building2, CalendarDays, Check, ChevronDown, CircleUserRound, Clock3, FileCheck2, FileText, Home, Landmark, LoaderCircle, LogOut, Menu, MessageCircle, Paperclip, Search, Send, ShieldCheck, Sparkles, UserRound, WalletCards, X } from "lucide-react";
 
-import { govFundDemoData } from "@/src/data/govfund-demo-data";
-import {
-  matchBadgeClasses,
-  progressBarClasses,
-  statusBadgeClasses,
-  statusMarker,
-} from "@/src/lib/govfund-display";
-import type { Fund, GovFundScreen } from "@/src/types/govfund";
-import { SuccessDialog } from "@/src/components/ui/SuccessDialog";
-
-function AppHeader({
-  screen,
-  onNavigate,
-}: {
-  screen: GovFundScreen;
-  onNavigate: (screen: GovFundScreen) => void;
-}) {
-  const signedIn = screen !== "landing";
-
-  return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <button
-          type="button"
-          onClick={() => onNavigate(signedIn ? "dashboard" : "landing")}
-          className="flex items-center gap-3 text-left"
-          aria-label="GovFund Match home"
-        >
-          <span className="grid h-10 w-10 place-items-center rounded-lg bg-[#1E3A8A] text-sm font-bold text-white shadow-sm">
-            GF
-          </span>
-          <span>
-            <span className="block text-lg font-bold text-slate-950">
-              GovFund Match
-            </span>
-            <span className="hidden text-xs font-medium text-slate-500 sm:block">
-              One-Stop Government Innovation Funding
-            </span>
-          </span>
-        </button>
-
-        <nav className="hidden items-center gap-7 text-sm font-semibold text-slate-600 md:flex">
-          <button
-            type="button"
-            onClick={() => onNavigate(signedIn ? "dashboard" : "landing")}
-            className="hover:text-[#1E3A8A]"
-          >
-            Home
-          </button>
-          <a className="hover:text-[#1E3A8A]" href="#about">
-            About
-          </a>
-          <a className="hover:text-[#1E3A8A]" href="#contact">
-            Contact
-          </a>
-          {signedIn ? (
-            <button
-              type="button"
-              onClick={() => onNavigate("status")}
-              className="rounded-lg border border-slate-300 px-4 py-2 text-[#1E3A8A] hover:border-[#1E3A8A] hover:bg-blue-50"
-            >
-              My Applications
-            </button>
-          ) : null}
-        </nav>
-      </div>
-    </header>
-  );
-}
-
-function LandingPage({ onLogin }: { onLogin: () => void }) {
-  return (
-    <main>
-      <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto grid min-h-[calc(100vh-73px)] max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:px-8">
-          <div className="max-w-3xl">
-            <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-sm font-semibold text-[#1E3A8A]">
-              NDID-ready public service platform
-            </span>
-            <h1 className="mt-7 text-4xl font-bold leading-tight tracking-normal text-slate-950 sm:text-5xl lg:text-6xl">
-              หาทุนรัฐ สร้างนวัตกรรม ในที่เดียว
-            </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-              แพลตฟอร์ม One-Stop Service สำหรับประชาชนและ SME
-              ไทยในการค้นหา จับคู่ และยื่นขอทุนวิจัยหรือนวัตกรรมจากภาครัฐ
-              พร้อมข้อมูลผู้สมัครที่กรอกให้อัตโนมัติอย่างปลอดภัย
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <button
-                type="button"
-                onClick={onLogin}
-                className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[#1E3A8A] px-6 py-3 text-base font-bold text-white shadow-sm transition hover:bg-blue-950 focus:outline-none focus:ring-4 focus:ring-blue-200"
-              >
-                เข้าสู่ระบบด้วย NDID (Login with NDID)
-              </button>
-              <a
-                href="#about"
-                className="inline-flex min-h-12 items-center justify-center rounded-lg border border-slate-300 px-6 py-3 text-base font-bold text-slate-700 hover:border-[#1E3A8A] hover:text-[#1E3A8A]"
-              >
-                ดูวิธีการทำงาน
-              </a>
-            </div>
-          </div>
-
-          <div className="rounded-lg border border-slate-200 bg-slate-50 p-5 shadow-sm">
-            <div className="rounded-lg bg-white p-5 shadow-sm">
-              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500">
-                    Smart Match Preview
-                  </p>
-                  <p className="mt-1 text-xl font-bold text-slate-950">
-                    โครงการอบแห้งพลังงานแสงอาทิตย์
-                  </p>
-                </div>
-                <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-700">
-                  95% Match
-                </span>
-              </div>
-              <div className="mt-5 space-y-4">
-                {[
-                  ["ยืนยันตัวตน", "NDID verified"],
-                  ["จับคู่ทุน", "AI ranked by eligibility"],
-                  ["ยื่นเอกสาร", "Auto-filled applicant profile"],
-                ].map(([title, value], index) => (
-                  <div
-                    key={title}
-                    className="grid grid-cols-[40px_1fr] items-center gap-3"
-                  >
-                    <span className="grid h-10 w-10 place-items-center rounded-lg bg-blue-50 text-sm font-bold text-[#1E3A8A]">
-                      {index + 1}
-                    </span>
-                    <div>
-                      <p className="font-bold text-slate-900">{title}</p>
-                      <p className="text-sm text-slate-500">{value}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-6 rounded-lg border border-dashed border-blue-300 bg-blue-50 p-4">
-                <p className="text-sm font-semibold text-[#1E3A8A]">
-                  Trust Blue secure exchange
-                </p>
-                <p className="mt-1 text-sm leading-6 text-slate-600">
-                  ข้อมูลจาก Digital ID และฐานทะเบียนธุรกิจถูกนำมาใช้เฉพาะขั้นตอนสมัครทุน
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="about" className="bg-slate-50 py-14">
-        <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 md:grid-cols-3 lg:px-8">
-          {[
-            ["ค้นหาทุนเร็วขึ้น", "รวมทุนรัฐหลายหน่วยงานไว้ในที่เดียว"],
-            ["ลดการกรอกซ้ำ", "ใช้ข้อมูลที่ยืนยันแล้วจาก NDID และทะเบียนธุรกิจ"],
-            ["ติดตามสถานะชัดเจน", "เห็นขั้นตอนการพิจารณาและสิ่งที่ต้องทำต่อ"],
-          ].map(([title, body]) => (
-            <article
-              key={title}
-              className="rounded-lg border border-slate-200 bg-white p-6"
-            >
-              <h2 className="text-lg font-bold text-slate-950">{title}</h2>
-              <p className="mt-3 leading-7 text-slate-600">{body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section id="contact" className="bg-white py-10">
-        <div className="mx-auto max-w-7xl px-4 text-sm text-slate-500 sm:px-6 lg:px-8">
-          Contact: support@govfund.example.go.th
-        </div>
-      </section>
-    </main>
-  );
-}
-
-function Dashboard({
-  idea,
-  hasMatched,
-  onIdeaChange,
-  onMatch,
-  onApply,
-}: {
-  idea: string;
-  hasMatched: boolean;
-  onIdeaChange: (value: string) => void;
-  onMatch: () => void;
-  onApply: (fund: Fund) => void;
-}) {
-  const actionRequiredCount = govFundDemoData.applications.filter(
-    (application) => application.tone === "red",
-  ).length;
-  const topMatch = Math.max(
-    ...govFundDemoData.funds.map((fund) => fund.matchScore),
-  );
-
-  return (
-    <main className="bg-slate-50">
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-          <p className="text-sm font-semibold text-slate-500">Dashboard</p>
-          <h1 className="mt-2 text-2xl font-bold text-slate-950 sm:text-3xl">
-            สวัสดี {govFundDemoData.user.name} (SME:{" "}
-            {govFundDemoData.user.company})
-          </h1>
-          <p className="mt-3 max-w-3xl leading-7 text-slate-600">
-            อธิบายแนวคิดโครงการของคุณ แล้วระบบจะจำลองการจับคู่ทุนที่เหมาะสมตามหมวด
-            หน่วยงาน และเงื่อนไขเบื้องต้น
-          </p>
-        </div>
-
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
-          {[
-            ["ทุนที่เปิดจับคู่", `${govFundDemoData.funds.length} รายการ`],
-            ["คะแนนเหมาะสมสูงสุด", `${topMatch}%`],
-            ["ต้องดำเนินการ", `${actionRequiredCount} รายการ`],
-          ].map(([label, value]) => (
-            <div
-              key={label}
-              className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
-            >
-              <p className="text-sm font-semibold text-slate-500">{label}</p>
-              <p className="mt-2 text-2xl font-bold text-slate-950">{value}</p>
-            </div>
-          ))}
-        </div>
-
-        <section className="mt-6 rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-[#1E3A8A]">
-                AI Smart Matching
-              </p>
-              <h2 className="mt-1 text-xl font-bold text-slate-950">
-                เล่าโปรเจกต์ของคุณให้ระบบช่วยหาทุน
-              </h2>
-            </div>
-            <span className="text-sm font-medium text-slate-500">
-              Secure mock analysis
-            </span>
-          </div>
-
-          <label className="mt-5 block" htmlFor="project-idea">
-            <span className="sr-only">Project idea</span>
-            <textarea
-              id="project-idea"
-              value={idea}
-              onChange={(event) => onIdeaChange(event.target.value)}
-              placeholder="พิมพ์แนวคิดหรือโปรเจกต์นวัตกรรมของคุณที่นี่ (เช่น ต้องการทำระบบอบแห้งพลังงานแสงอาทิตย์สำหรับสมุนไพร)..."
-              className="min-h-40 w-full resize-y rounded-lg border border-slate-300 bg-white p-4 text-base leading-7 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#1E3A8A] focus:ring-4 focus:ring-blue-100"
-            />
-          </label>
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <button
-              type="button"
-              onClick={onMatch}
-              className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[#1E3A8A] px-5 py-3 font-bold text-white shadow-sm hover:bg-blue-950 focus:outline-none focus:ring-4 focus:ring-blue-200"
-            >
-              ✨ ให้ AI ช่วยหาทุนที่เหมาะสม (Smart Match)
-            </button>
-            <p className="text-sm text-slate-500">
-              ตัวอย่างนี้ใช้ข้อมูลจำลองเพื่อแสดงประสบการณ์ผู้ใช้
-            </p>
-          </div>
-        </section>
-
-        {hasMatched ? (
-          <section className="mt-6">
-            <div className="mb-4">
-              <p className="text-sm font-semibold text-[#1E3A8A]">
-                Recommended Funds
-              </p>
-              <h2 className="text-xl font-bold text-slate-950">
-                ทุนที่เหมาะสมกับแนวคิดของคุณ
-              </h2>
-            </div>
-            <div className="grid gap-4 lg:grid-cols-3">
-              {govFundDemoData.funds.map((fund) => (
-                <article
-                  key={fund.id}
-                  className="flex min-h-[260px] flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-semibold text-slate-500">
-                        {fund.agency}
-                      </p>
-                      <h3 className="mt-2 text-lg font-bold leading-7 text-slate-950">
-                        {fund.title}
-                      </h3>
-                    </div>
-                    <span
-                      className={`shrink-0 rounded-full px-3 py-1 text-sm font-bold ${matchBadgeClasses(
-                        fund.matchScore,
-                      )}`}
-                    >
-                      {fund.matchScore}%
-                    </span>
-                  </div>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {fund.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="mt-5 h-2 rounded-full bg-slate-100">
-                    <div
-                      className="h-2 rounded-full bg-[#1E3A8A]"
-                      style={{ width: `${fund.matchScore}%` }}
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => onApply(fund)}
-                    className="mt-auto inline-flex min-h-11 items-center justify-center rounded-lg border border-[#1E3A8A] px-4 py-3 text-sm font-bold text-[#1E3A8A] hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-blue-100"
-                  >
-                    ดูรายละเอียดและยื่นขอทุน
-                  </button>
-                </article>
-              ))}
-            </div>
-          </section>
-        ) : null}
-      </section>
-    </main>
-  );
-}
-
-function ReadOnlyField({ label, value }: { label: string; value: string }) {
-  return (
-    <label className="block">
-      <span className="text-sm font-bold text-slate-700">{label}</span>
-      <input
-        value={value}
-        readOnly
-        className="mt-2 min-h-12 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700"
-      />
-    </label>
-  );
-}
-
-function ApplicationForm({
-  selectedFund,
-  onSaveDraft,
-  onSubmit,
-}: {
-  selectedFund: Fund;
-  onSaveDraft: () => void;
-  onSubmit: () => void;
-}) {
-  const [projectTitle, setProjectTitle] = useState(
-    "ระบบอบแห้งพลังงานแสงอาทิตย์สำหรับสมุนไพร",
-  );
-  const [budget, setBudget] = useState("1,500,000");
-
-  function submitForm(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    onSubmit();
-  }
-
-  return (
-    <main className="bg-slate-50">
-      <form
-        onSubmit={submitForm}
-        className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8"
-      >
-        <div className="mb-6">
-          <p className="text-sm font-semibold text-[#1E3A8A]">
-            One-Stop Submit
-          </p>
-          <h1 className="mt-2 text-2xl font-bold text-slate-950 sm:text-3xl">
-            ยื่นขอทุน: {selectedFund.title}
-          </h1>
-        </div>
-
-        <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-          <h2 className="text-xl font-bold text-slate-950">
-            ข้อมูลผู้สมัคร
-          </h2>
-          <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800">
-            ✅ ข้อมูลถูกดึงมาจากระบบ NDID และกรมพัฒนาธุรกิจการค้าอัตโนมัติ
-            (Auto-filled)
-          </div>
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            <ReadOnlyField
-              label="ชื่อ-นามสกุล"
-              value={govFundDemoData.user.name}
-            />
-            <ReadOnlyField
-              label="ชื่อบริษัท"
-              value={govFundDemoData.user.company}
-            />
-            <ReadOnlyField
-              label="เลขทะเบียนนิติบุคคล"
-              value={govFundDemoData.user.registrationNo}
-            />
-            <ReadOnlyField label="ที่อยู่" value={govFundDemoData.user.address} />
-          </div>
-        </section>
-
-        <section className="mt-6 rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-          <h2 className="text-xl font-bold text-slate-950">
-            รายละเอียดโครงการ
-          </h2>
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            <label className="block">
-              <span className="text-sm font-bold text-slate-700">
-                ชื่อโครงการ
-              </span>
-              <input
-                value={projectTitle}
-                onChange={(event) => setProjectTitle(event.target.value)}
-                className="mt-2 min-h-12 w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-[#1E3A8A] focus:ring-4 focus:ring-blue-100"
-              />
-            </label>
-            <label className="block">
-              <span className="text-sm font-bold text-slate-700">
-                งบประมาณที่ขอสนับสนุน
-              </span>
-              <div className="mt-2 flex min-h-12 overflow-hidden rounded-lg border border-slate-300 focus-within:border-[#1E3A8A] focus-within:ring-4 focus-within:ring-blue-100">
-                <span className="grid w-14 place-items-center bg-slate-50 text-sm font-bold text-slate-500">
-                  THB
-                </span>
-                <input
-                  value={budget}
-                  onChange={(event) => setBudget(event.target.value)}
-                  inputMode="numeric"
-                  className="w-full px-4 py-3 text-slate-900 outline-none"
-                />
-              </div>
-            </label>
-          </div>
-
-          <label className="mt-5 block cursor-pointer rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 px-5 py-8 text-center hover:border-[#1E3A8A] hover:bg-blue-50">
-            <span className="block text-base font-bold text-slate-900">
-              อัปโหลด Proposal และ Pitch Deck (PDF เท่านั้น)
-            </span>
-            <span className="mt-2 block text-sm text-slate-500">
-              Drag and drop zone หรือคลิกเพื่อเลือกไฟล์
-            </span>
-            <input type="file" accept="application/pdf" className="sr-only" />
-          </label>
-
-          <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-            <button
-              type="button"
-              onClick={onSaveDraft}
-              className="inline-flex min-h-12 items-center justify-center rounded-lg border border-slate-300 px-5 py-3 font-bold text-slate-700 hover:border-[#1E3A8A] hover:text-[#1E3A8A]"
-            >
-              บันทึกร่าง (Save Draft)
-            </button>
-            <button
-              type="submit"
-              className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[#1E3A8A] px-5 py-3 font-bold text-white shadow-sm hover:bg-blue-950 focus:outline-none focus:ring-4 focus:ring-blue-200"
-            >
-              ยืนยันการส่งข้อมูล (Submit Application)
-            </button>
-          </div>
-        </section>
-      </form>
-    </main>
-  );
-}
-
-function StatusDashboard() {
-  return (
-    <main className="min-h-[calc(100vh-73px)] bg-slate-50">
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-sm font-semibold text-[#1E3A8A]">
-              Dashboard Tab
-            </p>
-            <h1 className="mt-2 text-2xl font-bold text-slate-950 sm:text-3xl">
-              ติดตามสถานะการขอทุน (My Applications)
-            </h1>
-          </div>
-          <span className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600">
-            {govFundDemoData.applications.length} applications
-          </span>
-        </div>
-
-        <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-          <div className="hidden grid-cols-[1.5fr_1fr_1.1fr_0.8fr] gap-4 border-b border-slate-200 bg-slate-50 px-5 py-3 text-sm font-bold text-slate-600 md:grid">
-            <span>Project</span>
-            <span>Fund</span>
-            <span>Status</span>
-            <span>Submitted Date</span>
-          </div>
-          <div className="divide-y divide-slate-200">
-            {govFundDemoData.applications.map((application) => (
-              <article
-                key={application.title}
-                className="grid gap-4 px-5 py-5 md:grid-cols-[1.5fr_1fr_1.1fr_0.8fr] md:items-center"
-              >
-                <div>
-                  <p className="font-bold text-slate-950">
-                    {application.title}
-                  </p>
-                  <div className="mt-3 h-2 max-w-sm rounded-full bg-slate-100">
-                    <div
-                      className={`h-2 rounded-full ${progressBarClasses(
-                        application.tone,
-                      )}`}
-                      style={{ width: `${application.progress}%` }}
-                    />
-                  </div>
-                </div>
-                <p className="text-slate-600">{application.fund}</p>
-                <span
-                  className={`w-fit rounded-full px-3 py-1 text-sm font-bold ${statusBadgeClasses(
-                    application.tone,
-                  )}`}
-                >
-                  {statusMarker(application.tone)} {application.status}
-                </span>
-                <p className="text-sm font-semibold text-slate-500">
-                  {application.date}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-    </main>
-  );
-}
+type Screen = "dashboard" | "search" | "apply" | "tracking";
+type Fund = { id: number; title: string; agency: string; match: number; tags: string[] };
 
 export function GovFundMatchApp() {
-  const [screen, setScreen] = useState<GovFundScreen>("landing");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [screen, setScreen] = useState<Screen>("dashboard");
+  const [mobileMenu, setMobileMenu] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatInput, setChatInput] = useState("");
+  const [chatMessages, setChatMessages] = useState(["สวัสดีครับ ผมช่วยตรวจสอบเงื่อนไขทุนและเอกสารที่ต้องใช้ได้"]);
   const [idea, setIdea] = useState("");
-  const [hasMatched, setHasMatched] = useState(false);
-  const [selectedFund, setSelectedFund] = useState<Fund>(
-    govFundDemoData.funds[0],
-  );
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [draftSaved, setDraftSaved] = useState(false);
+  const [matching, setMatching] = useState(false);
+  const [matched, setMatched] = useState(false);
+  const [selectedFund, setSelectedFund] = useState<Fund | null>(null);
+  const [autoFilled, setAutoFilled] = useState(false);
+  const [checking, setChecking] = useState(false);
+  const [warningOpen, setWarningOpen] = useState(false);
+  const [form, setForm] = useState({ name: "", registration: "", address: "", projectTitle: "ระบบอบแห้งพลังงานแสงอาทิตย์อัจฉริยะ", budget: "2,500,000", summary: "" });
 
-  function navigate(nextScreen: GovFundScreen) {
-    setScreen(nextScreen);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const timeline = [
+    { agency: "บพข. (PMU-C)", fund: "แผนงานเศรษฐกิจ BCG", date: "1 ก.ย. - 15 ต.ค. 2569", color: "bg-emerald-500", width: "w-[72%]", offset: "ml-[8%]" },
+    { agency: "บพค. (PMU-B)", fund: "กำลังคนขั้นสูงและ AI", date: "15 ก.ย. - 30 ต.ค. 2569", color: "bg-blue-700", width: "w-[64%]", offset: "ml-[20%]" },
+    { agency: "วช. (NRCT)", fund: "ทุนวิจัยและนวัตกรรม", date: "1 ต.ค. - 30 พ.ย. 2569", color: "bg-amber-500", width: "w-[57%]", offset: "ml-[34%]" },
+    { agency: "กองทุนพลังงาน", fund: "Energy Innovation 2027", date: "1 พ.ย. - 15 ธ.ค. 2569", color: "bg-cyan-600", width: "w-[45%]", offset: "ml-[48%]" },
+  ];
+  const funds: Fund[] = [
+    { id: 1, title: "กองทุนส่งเสริมการอนุรักษ์พลังงาน", agency: "กระทรวงพลังงาน", match: 95, tags: ["พลังงาน", "SME", "นวัตกรรม"] },
+    { id: 2, title: "ทุนสนับสนุนนวัตกรรม วว.", agency: "สถาบันวิจัยวิทยาศาสตร์และเทคโนโลยีแห่งประเทศไทย", match: 82, tags: ["เกษตร", "วิจัยประยุกต์"] },
+  ];
+  const history = [
+    { project: "ระบบอบแห้งพลังงานแสงอาทิตย์", fund: "กองทุนอนุรักษ์พลังงาน", date: "20 ส.ค. 2569", status: "กำลังพิจารณา", english: "Under Review", tone: "amber" },
+    { project: "สารสกัดสมุนไพรต้านอนุมูลอิสระ", fund: "วว.", date: "12 ส.ค. 2569", status: "ขอเอกสารเพิ่ม", english: "Action Required", tone: "red" },
+  ];
+
+  const navigate = (next: Screen) => { setScreen(next); setMobileMenu(false); setNotificationsOpen(false); };
+  const runMatch = () => { if (!idea.trim()) return; setMatching(true); setMatched(false); window.setTimeout(() => { setMatching(false); setMatched(true); }, 900); };
+  const applyFor = (fund: Fund) => { setSelectedFund(fund); setForm((current) => ({ ...current, summary: idea })); navigate("apply"); };
+  const autoFill = () => { setForm((current) => ({ ...current, name: "คุณดนัย นักประดิษฐ์", registration: "010555XXXXXXX", address: "88/9 ถนนพหลโยธิน แขวงลาดยาว เขตจตุจักร กรุงเทพมหานคร 10900" })); setAutoFilled(true); };
+  const submitApplication = () => { setChecking(true); window.setTimeout(() => { setChecking(false); setWarningOpen(true); }, 850); };
+  const sendChat = () => { if (!chatInput.trim()) return; setChatMessages((items) => [...items, chatInput.trim(), "ทุนนี้กำหนดให้ SME ไทยถือหุ้นไม่น้อยกว่า 51% และต้องแนบงบการเงินล่าสุดครับ"]); setChatInput(""); };
+
+  if (!isLoggedIn) {
+    const loginOptions = [
+      { name: "ThaiD", label: "เข้าสู่ระบบด้วย ThaiD", color: "bg-emerald-600 hover:bg-emerald-700", icon: UserRound },
+      { name: "ทางรัฐ", label: "เข้าสู่ระบบด้วย ทางรัฐ", color: "bg-red-600 hover:bg-red-700", icon: Landmark },
+      { name: "NDID", label: "เข้าสู่ระบบด้วย NDID", color: "bg-blue-800 hover:bg-blue-900", icon: ShieldCheck },
+    ];
+    return <main className="min-h-screen bg-slate-100 px-4 py-8 sm:grid sm:place-items-center">
+      <div className="w-full max-w-5xl overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xl lg:grid lg:grid-cols-[1.05fr_0.95fr]">
+        <section className="relative flex min-h-72 flex-col justify-between overflow-hidden bg-blue-900 p-8 text-white sm:p-12">
+          <div className="absolute inset-y-0 right-0 w-28 border-l border-white/10 bg-blue-800/40" />
+          <div className="relative"><div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white text-blue-900"><Landmark size={26} /></div><p className="mt-10 text-sm font-semibold text-blue-200">ONE-STOP GOVERNMENT FUNDING</p><h1 className="mt-3 max-w-lg text-3xl font-bold leading-tight sm:text-4xl">GovFund Match:<br />ระบบศูนย์รวมทุนวิจัยรัฐ</h1><p className="mt-5 max-w-md leading-7 text-blue-100">ค้นหา จับคู่ ยื่นข้อเสนอ และติดตามทุนวิจัยภาครัฐได้จากจุดเดียว</p></div>
+          <div className="relative mt-10 flex items-center gap-2 text-sm text-blue-200"><ShieldCheck size={18} /> ระบบจำลองการยืนยันตัวตนภาครัฐ</div>
+        </section>
+        <section className="flex flex-col justify-center p-6 sm:p-10 lg:p-12"><p className="text-sm font-bold text-blue-800">เข้าสู่ระบบ</p><h2 className="mt-2 text-2xl font-bold text-slate-950">เลือกช่องทางยืนยันตัวตน</h2><p className="mt-2 text-sm leading-6 text-slate-500">ข้อมูลของท่านจะถูกใช้เพื่อจำลองการกรอกใบสมัครอัตโนมัติ</p><div className="mt-7 space-y-3">{loginOptions.map(({ name, label, color, icon: Icon }) => <button key={name} type="button" onClick={() => { setIsLoggedIn(true); setScreen("dashboard"); }} className={`flex min-h-14 w-full items-center justify-between rounded-lg px-5 text-left font-bold text-white shadow-sm transition ${color}`}><span className="flex items-center gap-3"><Icon size={22} />{label}</span><ArrowRight size={20} /></button>)}</div><p className="mt-7 text-center text-xs leading-5 text-slate-400">Prototype สำหรับสาธิตเท่านั้น ไม่เชื่อมต่อข้อมูลส่วนบุคคลจริง</p></section>
+      </div>
+    </main>;
   }
 
-  function applyToFund(fund: Fund) {
-    setSelectedFund(fund);
-    navigate("apply");
-  }
+  const navItems = [{ id: "dashboard" as Screen, label: "Dashboard", icon: Home }, { id: "search" as Screen, label: "ค้นหาทุน", icon: Search }, { id: "apply" as Screen, label: "ยื่นขอทุน", icon: FileText }, { id: "tracking" as Screen, label: "สถานะ", icon: FileCheck2 }];
+  const pageTitle = { dashboard: "ภาพรวมทุนวิจัย", search: "AI Smart Match", apply: "ยื่นขอทุน", tracking: "ติดตามสถานะ" }[screen];
 
-  function submitApplication() {
-    setShowSuccess(true);
-    navigate("status");
-  }
-
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-950">
-      <AppHeader screen={screen} onNavigate={navigate} />
-
-      {screen === "landing" ? (
-        <LandingPage onLogin={() => navigate("dashboard")} />
-      ) : null}
-
-      {screen === "dashboard" ? (
-        <Dashboard
-          idea={idea}
-          hasMatched={hasMatched}
-          onIdeaChange={setIdea}
-          onMatch={() => setHasMatched(true)}
-          onApply={applyToFund}
-        />
-      ) : null}
-
-      {screen === "apply" ? (
-        <ApplicationForm
-          selectedFund={selectedFund}
-          onSaveDraft={() => setDraftSaved(true)}
-          onSubmit={submitApplication}
-        />
-      ) : null}
-
-      {screen === "status" ? <StatusDashboard /> : null}
-
-      {draftSaved ? (
-        <div className="fixed bottom-4 left-1/2 z-40 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-lg border border-blue-200 bg-white px-4 py-3 text-sm font-semibold text-[#1E3A8A] shadow-lg">
-          บันทึกร่างเรียบร้อยแล้ว
-          <button
-            type="button"
-            className="float-right font-bold text-slate-500"
-            onClick={() => setDraftSaved(false)}
-            aria-label="Dismiss draft saved message"
-          >
-            Close
-          </button>
-        </div>
-      ) : null}
-
-      <SuccessDialog open={showSuccess} onOpenChange={setShowSuccess} />
+  return <div className="min-h-screen bg-slate-100 text-slate-900">
+    {mobileMenu && <button type="button" aria-label="ปิดเมนู" onClick={() => setMobileMenu(false)} className="fixed inset-0 z-30 bg-slate-950/40 lg:hidden" />}
+    <aside className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col bg-blue-950 text-white transition-transform lg:translate-x-0 ${mobileMenu ? "translate-x-0" : "-translate-x-full"}`}>
+      <div className="flex h-20 items-center gap-3 border-b border-white/10 px-6"><div className="grid h-10 w-10 place-items-center rounded-lg bg-white text-blue-900"><Landmark size={22} /></div><div><p className="font-bold">GovFund Match</p><p className="text-xs text-blue-200">Research Funding Portal</p></div><button type="button" onClick={() => setMobileMenu(false)} className="ml-auto lg:hidden" aria-label="ปิดเมนู"><X /></button></div>
+      <nav className="flex-1 space-y-1 p-4" aria-label="เมนูหลัก">{navItems.map(({ id, label, icon: Icon }) => <button key={id} type="button" onClick={() => navigate(id)} className={`flex min-h-12 w-full items-center gap-3 rounded-lg px-4 text-left font-semibold transition ${screen === id ? "bg-white text-blue-950" : "text-blue-100 hover:bg-white/10"}`}><Icon size={20} />{label}</button>)}</nav>
+      <div className="border-t border-white/10 p-4"><div className="flex items-center gap-3 px-3 py-3"><CircleUserRound size={34} /><div className="min-w-0"><p className="truncate text-sm font-bold">คุณดนัย นักประดิษฐ์</p><p className="truncate text-xs text-blue-200">บริษัท อกริเทค จำกัด</p></div></div><button type="button" onClick={() => setIsLoggedIn(false)} className="mt-2 flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-white/10"><LogOut size={18} /> ออกจากระบบ</button></div>
+    </aside>
+    <div className="lg:pl-72">
+      <header className="sticky top-0 z-20 flex h-20 items-center border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8"><button type="button" onClick={() => setMobileMenu(true)} className="mr-3 rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden" aria-label="เปิดเมนู"><Menu /></button><div><p className="text-xs font-bold text-blue-800">GOVFUND MATCH</p><h1 className="text-lg font-bold sm:text-xl">{pageTitle}</h1></div><div className="relative ml-auto"><button type="button" onClick={() => setNotificationsOpen((open) => !open)} className="relative grid h-11 w-11 place-items-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50" aria-label="การแจ้งเตือน" aria-expanded={notificationsOpen}><Bell size={21} /><span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-600" /></button>{notificationsOpen && <div className="absolute right-0 mt-2 w-[min(22rem,calc(100vw-2rem))] rounded-lg border border-slate-200 bg-white p-4 shadow-xl"><div className="flex items-center justify-between"><p className="font-bold">การแจ้งเตือน</p><span className="rounded-full bg-red-50 px-2 py-1 text-xs font-bold text-red-700">ใหม่</span></div><button type="button" onClick={() => navigate("tracking")} className="mt-3 w-full rounded-lg bg-blue-50 p-4 text-left text-sm leading-6 text-slate-700 hover:bg-blue-100"><span className="font-bold text-blue-900">สถานะโครงการ XYZ ของท่านเปลี่ยนเป็น “อนุมัติ”</span><br />กรุณายืนยันรับสิทธิ์ภายใน 7 วัน</button></div>}</div></header>
+      <main className="p-4 sm:p-6 lg:p-8">
+        {screen === "dashboard" && <div className="mx-auto max-w-7xl">
+          <section className="flex flex-col gap-5 border-b border-slate-200 pb-7 md:flex-row md:items-end md:justify-between"><div><p className="text-sm font-semibold text-slate-500">วันพฤหัสบดีที่ 27 สิงหาคม 2569</p><h2 className="mt-1 text-2xl font-bold text-slate-950 sm:text-3xl">สวัสดี คุณดนัย</h2><p className="mt-2 text-slate-600">ติดตามช่วงเปิดรับทุนและงานที่ต้องดำเนินการได้จากที่นี่</p></div><button type="button" onClick={() => navigate("search")} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-blue-800 px-5 font-bold text-white hover:bg-blue-900"><Sparkles size={18} /> เริ่มจับคู่ทุน</button></section>
+          <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{[{ label: "ทุนที่กำลังเปิด", value: "12", icon: WalletCards, tone: "text-blue-800 bg-blue-50" }, { label: "ใกล้ถึงกำหนด", value: "3", icon: Clock3, tone: "text-amber-700 bg-amber-50" }, { label: "อยู่ระหว่างพิจารณา", value: "2", icon: FileCheck2, tone: "text-cyan-700 bg-cyan-50" }, { label: "ต้องดำเนินการ", value: "1", icon: AlertTriangle, tone: "text-red-700 bg-red-50" }].map(({ label, value, icon: Icon, tone }) => <article key={label} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"><div className={`grid h-10 w-10 place-items-center rounded-lg ${tone}`}><Icon size={20} /></div><p className="mt-4 text-sm font-semibold text-slate-500">{label}</p><p className="mt-1 text-3xl font-bold">{value}</p></article>)}</section>
+          <section className="mt-6 rounded-lg border border-slate-200 bg-white shadow-sm"><div className="flex flex-col gap-2 border-b border-slate-200 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"><div><h2 className="text-xl font-bold">PMU Funding Timeline</h2><p className="mt-1 text-sm text-slate-500">ปฏิทินเปิดรับข้อเสนอทุนที่กำลังจะมาถึง</p></div><div className="flex items-center gap-2 text-sm font-semibold text-slate-500"><CalendarDays size={18} /> ก.ย. - ธ.ค. 2569</div></div><div className="overflow-x-auto p-5 sm:p-6"><div className="min-w-[680px]"><div className="grid grid-cols-[190px_1fr] gap-4 border-b border-slate-200 pb-3 text-xs font-bold text-slate-400"><span>หน่วยงาน / ทุน</span><div className="grid grid-cols-4 text-center"><span>ก.ย.</span><span>ต.ค.</span><span>พ.ย.</span><span>ธ.ค.</span></div></div><div className="divide-y divide-slate-100">{timeline.map((item) => <div key={item.fund} className="grid grid-cols-[190px_1fr] items-center gap-4 py-4"><div><p className="text-sm font-bold">{item.agency}</p><p className="mt-1 truncate text-xs text-slate-500">{item.fund}</p></div><div className="relative h-10 rounded bg-slate-100"><div className={`absolute top-1/2 flex h-7 -translate-y-1/2 items-center rounded px-3 text-xs font-bold text-white shadow-sm ${item.color} ${item.width} ${item.offset}`}><span className="truncate">{item.date}</span></div></div></div>)}</div></div></div></section>
+        </div>}
+        {screen === "search" && <div className="mx-auto max-w-5xl"><section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><div className="flex items-start gap-4"><div className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-blue-800 text-white"><Sparkles size={22} /></div><div><h2 className="text-xl font-bold">เล่าไอเดียงานวิจัยให้ AI ช่วยค้นหาทุน</h2><p className="mt-1 text-sm leading-6 text-slate-500">ระบบจะวิเคราะห์หัวข้อ อุตสาหกรรม และความพร้อมของโครงการ</p></div></div><label className="mt-6 block text-sm font-bold" htmlFor="idea">พิมพ์ไอเดียงานวิจัยของคุณ</label><textarea id="idea" value={idea} onChange={(event) => setIdea(event.target.value)} placeholder="เช่น ต้องการพัฒนาระบบอบแห้งสมุนไพรด้วยพลังงานแสงอาทิตย์สำหรับ SME..." className="mt-2 min-h-40 w-full resize-y rounded-lg border border-slate-300 p-4 leading-7 outline-none focus:border-blue-800 focus:ring-4 focus:ring-blue-100" /><div className="mt-4 flex items-center justify-between gap-4"><p className="text-xs text-slate-400">ข้อมูลนี้ใช้สำหรับการจับคู่ทุนจำลองเท่านั้น</p><button type="button" disabled={!idea.trim() || matching} onClick={runMatch} className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-blue-800 px-5 font-bold text-white hover:bg-blue-900 disabled:cursor-not-allowed disabled:bg-slate-300">{matching ? <LoaderCircle className="animate-spin" size={18} /> : <Sparkles size={18} />}{matching ? "กำลังวิเคราะห์..." : "AI Smart Match"}</button></div></section>{matched && <section className="mt-6"><div className="flex items-end justify-between"><div><p className="text-sm font-bold text-emerald-700">วิเคราะห์สำเร็จ</p><h2 className="mt-1 text-xl font-bold">ทุนที่เหมาะกับโครงการของคุณ</h2></div><span className="text-sm text-slate-500">พบ {funds.length} รายการ</span></div><div className="mt-4 grid gap-4 md:grid-cols-2">{funds.map((fund) => <article key={fund.id} className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-start justify-between gap-3"><div className="grid h-10 w-10 place-items-center rounded-lg bg-blue-50 text-blue-800"><Building2 size={20} /></div><span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-700">{fund.match}% Match</span></div><h3 className="mt-4 text-lg font-bold leading-7">{fund.title}</h3><p className="mt-1 text-sm text-slate-500">{fund.agency}</p><div className="mt-4 flex flex-wrap gap-2">{fund.tags.map((tag) => <span key={tag} className="rounded bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">#{tag}</span>)}</div><button type="button" onClick={() => applyFor(fund)} className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-blue-800 px-4 font-bold text-white hover:bg-blue-900">ยื่นขอทุนนี้ <ArrowRight size={18} /></button></article>)}</div></section>}</div>}
+        {screen === "apply" && <div className="mx-auto max-w-5xl"><div className="mb-6"><p className="text-sm font-bold text-blue-800">ONE-CONTRACT PLATFORM</p><h2 className="mt-1 text-2xl font-bold">ใบสมัครขอรับทุนวิจัย</h2><p className="mt-2 text-slate-500">{selectedFund?.title ?? "เลือกทุนจากหน้า AI Smart Match หรือกรอกแบบฟอร์มตัวอย่าง"}</p></div><section className="rounded-lg border border-slate-200 bg-white shadow-sm"><div className="flex flex-col gap-4 border-b border-slate-200 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"><div><h3 className="font-bold">1. ข้อมูลผู้สมัครและนิติบุคคล</h3><p className="mt-1 text-sm text-slate-500">ข้อมูลที่ยืนยันจากบริการภาครัฐ</p></div><button type="button" onClick={autoFill} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-blue-800 px-4 font-bold text-blue-800 hover:bg-blue-50"><Sparkles size={18} /> ใช้ AI Auto-fill ดึงข้อมูลบริษัท</button></div>{autoFilled && <div className="mx-5 mt-5 flex items-start gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800 sm:mx-6"><Check className="mt-0.5 shrink-0" size={18} /><span><strong>ดึงข้อมูลสำเร็จ</strong> จาก ThaiD และกรมพัฒนาธุรกิจการค้า (ข้อมูลจำลอง)</span></div>}<div className="grid gap-5 p-5 sm:grid-cols-2 sm:p-6">{[{ key: "name", label: "ชื่อ-นามสกุล" }, { key: "registration", label: "เลขทะเบียนนิติบุคคล" }, { key: "address", label: "ที่อยู่บริษัท", wide: true }].map((field) => <label key={field.key} className={`block text-sm font-bold ${field.wide ? "sm:col-span-2" : ""}`}>{field.label}<input value={form[field.key as keyof typeof form]} onChange={(event) => setForm({ ...form, [field.key]: event.target.value })} placeholder="กด AI Auto-fill เพื่อดึงข้อมูล" className="mt-2 h-12 w-full rounded-lg border border-slate-300 px-4 font-normal outline-none focus:border-blue-800 focus:ring-4 focus:ring-blue-100" /></label>)}</div></section><section className="mt-5 rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6"><h3 className="font-bold">2. รายละเอียดโครงการ</h3><div className="mt-5 grid gap-5 sm:grid-cols-2"><label className="block text-sm font-bold sm:col-span-2">ชื่อโครงการ<input value={form.projectTitle} onChange={(event) => setForm({ ...form, projectTitle: event.target.value })} className="mt-2 h-12 w-full rounded-lg border border-slate-300 px-4 font-normal outline-none focus:border-blue-800 focus:ring-4 focus:ring-blue-100" /></label><label className="block text-sm font-bold">งบประมาณที่ขอสนับสนุน (บาท)<input value={form.budget} onChange={(event) => setForm({ ...form, budget: event.target.value })} className="mt-2 h-12 w-full rounded-lg border border-slate-300 px-4 font-normal outline-none focus:border-blue-800 focus:ring-4 focus:ring-blue-100" /></label><label className="block text-sm font-bold sm:col-span-2">บทสรุปโครงการ<textarea value={form.summary} onChange={(event) => setForm({ ...form, summary: event.target.value })} className="mt-2 min-h-32 w-full rounded-lg border border-slate-300 p-4 font-normal outline-none focus:border-blue-800 focus:ring-4 focus:ring-blue-100" /></label><button type="button" className="flex min-h-28 items-center justify-center gap-3 rounded-lg border-2 border-dashed border-slate-300 text-sm font-bold text-slate-500 hover:border-blue-600 hover:bg-blue-50 hover:text-blue-800 sm:col-span-2"><Paperclip size={20} /> แนบ Proposal และ Pitch Deck (PDF)</button></div></section><div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end"><button type="button" className="min-h-11 rounded-lg border border-slate-300 px-5 font-bold text-slate-700 hover:bg-white">บันทึกร่าง</button><button type="button" onClick={submitApplication} disabled={checking} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-blue-800 px-6 font-bold text-white hover:bg-blue-900 disabled:bg-blue-600">{checking ? <LoaderCircle className="animate-spin" size={18} /> : <Send size={18} />}{checking ? "กำลังตรวจสอบการรับทุนซ้ำ..." : "Submit Application"}</button></div></div>}
+        {screen === "tracking" && <div className="mx-auto max-w-7xl"><div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><div><h2 className="text-2xl font-bold">ติดตามสถานะการขอทุน</h2><p className="mt-1 text-slate-500">My Applications</p></div><p className="text-sm font-semibold text-slate-500">อัปเดตล่าสุด วันนี้ 09:30 น.</p></div><div className="mt-6 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><div className="overflow-x-auto"><table className="w-full min-w-[780px] text-left"><thead className="bg-slate-50 text-xs uppercase text-slate-500"><tr><th className="px-6 py-4">โครงการ</th><th className="px-6 py-4">แหล่งทุน</th><th className="px-6 py-4">วันที่ยื่น</th><th className="px-6 py-4">สถานะ</th><th className="px-6 py-4"><span className="sr-only">การทำงาน</span></th></tr></thead><tbody className="divide-y divide-slate-200">{history.map((item) => <tr key={item.project} className="hover:bg-slate-50"><td className="px-6 py-5 font-bold">{item.project}</td><td className="px-6 py-5 text-sm text-slate-600">{item.fund}</td><td className="px-6 py-5 text-sm text-slate-600">{item.date}</td><td className="px-6 py-5"><span className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold ${item.tone === "red" ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-700"}`}><span className={`h-2 w-2 rounded-full ${item.tone === "red" ? "bg-red-500" : "bg-amber-500"}`} />{item.status} ({item.english})</span></td><td className="px-6 py-5"><button type="button" className="rounded-lg border border-slate-200 p-2 text-slate-500 hover:border-blue-700 hover:text-blue-800" aria-label={`ดูรายละเอียด ${item.project}`}><ChevronDown size={18} /></button></td></tr>)}</tbody></table></div></div></div>}
+      </main>
     </div>
-  );
+    <button type="button" onClick={() => setChatOpen((open) => !open)} className="fixed bottom-5 right-5 z-30 flex h-14 items-center gap-2 rounded-full bg-blue-800 px-4 font-bold text-white shadow-xl hover:bg-blue-900" aria-label="เปิดผู้ช่วย AI"><Bot size={23} /><span className="hidden sm:inline">ถาม AI</span></button>
+    {chatOpen && <section className="fixed bottom-24 right-4 z-40 flex h-[min(31rem,calc(100vh-8rem))] w-[min(23rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-lg border border-slate-200 bg-white shadow-2xl"><header className="flex items-center gap-3 bg-blue-900 p-4 text-white"><div className="grid h-9 w-9 place-items-center rounded-lg bg-white/15"><MessageCircle size={20} /></div><div><p className="font-bold">GovFund AI Assistant</p><p className="text-xs text-blue-200">พร้อมช่วยตรวจเงื่อนไขทุน</p></div><button type="button" onClick={() => setChatOpen(false)} className="ml-auto" aria-label="ปิดแชต"><X size={20} /></button></header><div className="flex-1 space-y-3 overflow-y-auto bg-slate-50 p-4">{chatMessages.map((message, index) => <div key={`${message}-${index}`} className={`max-w-[88%] rounded-lg p-3 text-sm leading-6 ${index % 2 === 1 ? "ml-auto bg-blue-800 text-white" : "bg-white text-slate-700 shadow-sm"}`}>{message}</div>)}</div><div className="flex gap-2 border-t border-slate-200 p-3"><input value={chatInput} onChange={(event) => setChatInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") sendChat(); }} placeholder="ถามเกี่ยวกับเงื่อนไขทุน..." className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 outline-none focus:border-blue-800" /><button type="button" onClick={sendChat} className="grid h-11 w-11 place-items-center rounded-lg bg-blue-800 text-white" aria-label="ส่งข้อความ"><Send size={18} /></button></div></section>}
+    {warningOpen && <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/55 p-4" role="dialog" aria-modal="true" aria-labelledby="warning-title"><section className="w-full max-w-lg rounded-lg bg-white shadow-2xl"><div className="border-b border-red-100 bg-red-50 p-6"><div className="grid h-12 w-12 place-items-center rounded-lg bg-red-100 text-red-700"><AlertTriangle size={26} /></div><h2 id="warning-title" className="mt-4 text-xl font-bold text-red-900">Semantic Checker Alert</h2></div><div className="p-6"><p className="text-lg font-bold leading-8 text-slate-900">ตรวจพบความเสี่ยง: การรับทุนซ้ำซ้อน</p><p className="mt-3 leading-7 text-slate-600">โครงการของคุณมีความคล้ายคลึงกับโครงการที่เคยได้รับทุนจาก <strong>PMU-B ไปแล้ว 80%</strong> ระบบไม่อนุญาตให้ยื่นซ้ำซ้อน</p><div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600"><strong>คำแนะนำ:</strong> ตรวจสอบขอบเขตงานและผลผลิตของโครงการเดิม หรือปรับข้อเสนอให้แสดงความแตกต่างอย่างชัดเจนก่อนยื่นใหม่</div><button type="button" onClick={() => setWarningOpen(false)} className="mt-6 min-h-11 w-full rounded-lg bg-slate-800 px-5 font-bold text-white hover:bg-slate-900">Cancel</button></div></section></div>}
+  </div>;
 }

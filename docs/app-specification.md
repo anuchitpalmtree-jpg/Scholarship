@@ -17,35 +17,36 @@ Help Thai citizens and SMEs find suitable government innovation and research fun
 
 | Screen | Purpose | Key actions |
 | --- | --- | --- |
-| Landing and Login | Explain the service and start secure access | Mock NDID login |
-| Dashboard and AI Smart Match | Capture a project idea and recommend funds | Enter idea, run Smart Match, choose a fund |
-| Application Form | Submit a one-stop funding request | Review auto-filled profile, add project title, budget, PDF upload, save draft, submit |
-| Application Status | Track submitted funding requests | View status, progress, submitted date, action-needed items |
+| Authentication | Start secure access through a government identity channel | Mock ThaiD, ทางรัฐ, or NDID login |
+| Dashboard | Monitor upcoming PMU funding windows | Review funding timeline, open AI assistant |
+| AI Smart Match | Capture a project idea and recommend funds | Enter idea, wait for analysis, choose a fund |
+| One-contract Application | Prepare a one-stop funding request | AI auto-fill company profile, add project details, attach proposal, submit |
+| Application Status | Track submitted funding requests | View status, submitted date, action-needed items, and auto alerts |
 
 ## Information Tracked
 
 - Applicant profile: name, company, business registration number, address.
 - Funds: title, agency, match score, tags.
 - Application: project title, fund, status, status color, submitted date, progress.
-- Draft state: prototype-only confirmation when the draft button is clicked.
+- Notifications and chatbot messages: local prototype state only.
 
 ## Reporting
 
 The dashboard shows:
 
-- Number of funds available for matching.
-- Highest match score.
-- Number of applications requiring action.
-- Status list with progress indicators.
+- Number of open funds, approaching deadlines, applications under review, and actions required.
+- PMU funding timeline from September through December 2026.
+- Status table with submitted dates and action-required badges.
 
 Future leadership reports should include agency filters, application volume, approval cycle time, requested budget, and document-completion rates.
 
 ## Workflow Rules
 
-- Login is a mock NDID handoff and does not validate a real identity.
-- Smart Match reveals starter fund recommendations; it does not call a live AI service yet.
-- Auto-filled applicant fields are read-only in the application form.
-- Submit moves the person to the status screen and shows a success dialog.
+- Login buttons are mock ThaiD, ทางรัฐ, and NDID handoffs and do not validate a real identity.
+- Smart Match simulates analysis before revealing starter recommendations; it does not call a live AI service yet.
+- AI Auto-fill populates demo applicant and company data locally.
+- Submit simulates a semantic duplicate-funding check and blocks the request with an 80% PMU-B similarity warning.
+- The notification bell and funding-rule chatbot use local mock messages.
 - File upload is visual only in this prototype and does not store files.
 
 ## Open Decisions
