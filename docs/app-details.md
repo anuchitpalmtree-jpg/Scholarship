@@ -7,6 +7,8 @@
 | Applicant profile | Name, company, registration number, address | Stored as starter data in `src/data/govfund-demo-data.ts` |
 | Fund | ID, title, agency, match score, tags | Used to render recommendation cards |
 | Application | Project title, fund, status, date, progress, tone | Used to render the status dashboard |
+| Readiness assessment | Dimension, assumption question, base score, risk level, evidence checklist, note | Prototype state is local to the current browser session |
+| Data dependency | Source, purpose, mock readiness state | Highlights integrations that need agency confirmation |
 
 ## Status Values
 
@@ -23,6 +25,9 @@ Future status values should include draft, submitted, eligibility check, approve
 - Action-required count is calculated from applications marked with the red status tone.
 - Match badges are green at 90% or higher, blue at 70-89%, and gray below 70%.
 - Progress bars are visual only and do not currently calculate from workflow timestamps.
+- Overall readiness is the percentage of completed evidence items across all five dimensions.
+- Dimension base scores communicate workshop prioritization; they do not change dynamically and are not government approval scores.
+- Feasibility remains the highest-priority risk until cross-agency APIs, data quality, duplicate-funding detection, and maintenance ownership are validated.
 
 ## Seed And Demo Data
 

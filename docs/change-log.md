@@ -1,5 +1,12 @@
 # GovFund Match Change Log
 
+## 2026-09-17
+
+- Translated the Risky Assumptions workshop into an interactive Project Readiness Lab while preserving all existing prototype workflows.
+- Added five-dimension readiness scoring for Problem, Desirability, Usability, Feasibility, and Viability.
+- Added evidence checklists, working notes, a data-dependency map, recommended validation actions, a prototype test plan, and a live readiness report.
+- Identified cross-agency data integration and ongoing data quality as the riskiest assumptions to validate before a real pilot.
+
 ## 2026-08-27
 
 - Reworked authentication to offer mock ThaiD, ทางรัฐ, and NDID sign-in.

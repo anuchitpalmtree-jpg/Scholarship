@@ -55,6 +55,10 @@ test("keeps the requested GovFund mock data in the app source", async () => {
   assert.match(page, /GovFundMatchApp/);
   assert.match(prototype, /คุณดนัย นักประดิษฐ์/);
   assert.match(prototype, /PMU Funding Timeline/);
+  assert.match(prototype, /Project Readiness Lab/);
+  assert.match(prototype, /RISKIEST ASSUMPTION/);
+  assert.match(prototype, /Problem.*Desirability.*Usability.*Feasibility.*Viability/s);
+  assert.match(prototype, /Data dependency map/);
   assert.match(prototype, /กองทุนส่งเสริมการอนุรักษ์พลังงาน/);
   assert.match(prototype, /ทุนสนับสนุนนวัตกรรม วว\./);
   assert.match(prototype, /PMU-B ไปแล้ว 80%/);

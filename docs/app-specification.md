@@ -19,6 +19,7 @@ Help Thai citizens and SMEs find suitable government innovation and research fun
 | --- | --- | --- |
 | Authentication | Start secure access through a government identity channel | Mock ThaiD, ทางรัฐ, or NDID login |
 | Dashboard | Monitor upcoming PMU funding windows | Review funding timeline, open AI assistant |
+| Project Readiness Lab | Turn risky assumptions into testable evidence before applying | Review five risk dimensions, check evidence, inspect data dependencies, save findings, open readiness report |
 | AI Smart Match | Capture a project idea and recommend funds | Enter idea, wait for analysis, choose a fund |
 | One-contract Application | Prepare a one-stop funding request | AI auto-fill company profile, add project details, attach proposal, submit |
 | Application Status | Track submitted funding requests | View status, submitted date, action-needed items, and auto alerts |
@@ -29,6 +30,7 @@ Help Thai citizens and SMEs find suitable government innovation and research fun
 - Funds: title, agency, match score, tags.
 - Application: project title, fund, status, status color, submitted date, progress.
 - Notifications and chatbot messages: local prototype state only.
+- Readiness assessment: five dimensions (Problem, Desirability, Usability, Feasibility, Viability), evidence checklist, notes, dependency status, and pilot actions.
 
 ## Reporting
 
@@ -36,6 +38,7 @@ The dashboard shows:
 
 - Number of open funds, approaching deadlines, applications under review, and actions required.
 - PMU funding timeline from September through December 2026.
+- Overall project-readiness percentage and evidence completion by risk dimension.
 - Status table with submitted dates and action-required badges.
 
 Future leadership reports should include agency filters, application volume, approval cycle time, requested budget, and document-completion rates.
@@ -47,6 +50,8 @@ Future leadership reports should include agency filters, application volume, app
 - AI Auto-fill populates demo applicant and company data locally.
 - Submit simulates a semantic duplicate-funding check and blocks the request with an 80% PMU-B similarity warning.
 - The notification bell and funding-rule chatbot use local mock messages.
+- Feasibility is treated as the riskiest current assumption until agency APIs, data ownership, data accuracy, duplicate-funding detection, and maintenance costs are validated.
+- Readiness scores are prototype guidance, not formal approval criteria; real launch decisions require agency and data-owner review.
 - File upload is visual only in this prototype and does not store files.
 
 ## Open Decisions
