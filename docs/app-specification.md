@@ -1,62 +1,43 @@
-# GovFund Match App Specification
+# Grant+ App Specification
 
 ## Business Goal
 
-Help Thai citizens and SMEs find suitable government innovation and research funds faster, reduce repeated form entry, and track application progress in one place.
+ช่วยให้นักวิจัยและผู้ประสานงานเห็นทุนที่เปิดรับ ตรวจความครบของข้อเสนอ ยื่นใบสมัคร และติดตามหลักฐานการรับเรื่องได้จากจุดเดียว โดยใช้ชื่อระบบ “Grant+ ทุนที่ใช่ ไปได้ไกลกว่า”
 
 ## People And Permissions
 
-| People using the app | What they can do in this prototype | Future pilot need |
+| ผู้ใช้งาน | สิ่งที่ทำได้ใน prototype | สิ่งที่ต้องเพิ่มก่อนใช้จริง |
 | --- | --- | --- |
-| SME applicant | Sign in with mock NDID, describe a project, view matched funds, draft and submit an application | Real sign-in, saved drafts, upload history |
-| Government program officer | Represented through status labels only | Review queue, status updates, document requests |
-| Leadership or fund owner | View summary numbers and application status | Portfolio reporting, filters, exports |
-| Platform administrator | Not implemented | User access, data setup, audit and support tools |
+| นักวิจัย | เข้าด้วยบัญชีจำลอง ค้นทุน ตรวจข้อเสนอ และยื่นด้วยตนเอง | Google OAuth/identity จริงและสิทธิ์เข้าถึง |
+| ผู้ประสานงาน | เข้าด้วยบัญชีตนเองและระบุว่ายื่นแทนนักวิจัยคนใด | หนังสือมอบหมาย การยืนยันจากนักวิจัย และ audit trail |
+| เจ้าหน้าที่แหล่งทุน | แสดงผ่านสถานะและรหัสรับเรื่อง | review queue และสิทธิ์เปลี่ยนสถานะ |
+| ผู้ดูแลระบบ | ยังไม่ทำ | จัดการบัญชี แม่แบบทุน ข้อมูลข่าว และบันทึกตรวจสอบ |
 
-## Main Screens And Workflows
+## Main Screens
 
-| Screen | Purpose | Key actions |
-| --- | --- | --- |
-| Authentication | Start secure access through a government identity channel | Mock ThaiD, ทางรัฐ, or NDID login |
-| Dashboard | Monitor upcoming PMU funding windows | Review funding timeline, open AI assistant |
-| Project Readiness Lab | Turn risky assumptions into testable evidence before applying | Review five risk dimensions, check evidence, inspect data dependencies, save findings, open readiness report |
-| AI Smart Match | Capture a project idea and recommend funds | Enter idea, wait for analysis, choose a fund |
-| One-contract Application | Prepare a one-stop funding request | AI auto-fill company profile, add project details, attach proposal, submit |
-| Application Status | Track submitted funding requests | View status, submitted date, action-needed items, and auto alerts |
-
-## Information Tracked
-
-- Applicant profile: name, company, business registration number, address.
-- Funds: title, agency, match score, tags.
-- Application: project title, fund, status, status color, submitted date, progress.
-- Notifications and chatbot messages: local prototype state only.
-- Readiness assessment: five dimensions (Problem, Desirability, Usability, Feasibility, Viability), evidence checklist, notes, dependency status, and pilot actions.
-
-## Reporting
-
-The dashboard shows:
-
-- Number of open funds, approaching deadlines, applications under review, and actions required.
-- PMU funding timeline from September through December 2026.
-- Overall project-readiness percentage and evidence completion by risk dimension.
-- Status table with submitted dates and action-required badges.
-
-Future leadership reports should include agency filters, application volume, approval cycle time, requested budget, and document-completion rates.
+| หน้าจอ | จุดประสงค์ |
+| --- | --- |
+| Public funding news | แสดงตัวอย่างทุน 3 รายการแบบภาพเลื่อน พร้อมช่วงเปิดรับ จำนวนผู้สมัครจำลอง และลิงก์ต้นทาง |
+| Login | เลือกผู้วิจัยยื่นเองหรือผู้ประสานงานลงทะเบียนแทน แล้วใช้ mock Google/government sign-in |
+| Dashboard | สรุปทุนที่เปิดรับ งานที่ต้องทำ ปฏิทิน และทางลัดไปตรวจข้อเสนอ |
+| Evidence-based Readiness | ตรวจว่ามีเนื้อหา/เอกสารครบตาม template ของ วช., NIA หรือ บพข. โดยไม่ประเมินคุณภาพแนวคิด |
+| AI Smart Match | รับคำอธิบายโครงการและแนะนำแหล่งทุนตัวอย่าง |
+| Application | แสดงผู้วิจัยและผู้ลงทะเบียนแยกกัน เติมข้อมูลสาธิต และส่งใบสมัคร |
+| Semantic alert | แจ้งความคล้ายคลึง ผู้สมัครรับทราบและยืนยันไปต่อได้ |
+| Tracking | แสดงวันที่ยื่น วันที่กองทุนรับเรื่อง รหัสรับเรื่อง สถานะ และ mock email |
 
 ## Workflow Rules
 
-- Login buttons are mock ThaiD, ทางรัฐ, and NDID handoffs and do not validate a real identity.
-- Smart Match simulates analysis before revealing starter recommendations; it does not call a live AI service yet.
-- AI Auto-fill populates demo applicant and company data locally.
-- Submit simulates a semantic duplicate-funding check and blocks the request with an 80% PMU-B similarity warning.
-- The notification bell and funding-rule chatbot use local mock messages.
-- Feasibility is treated as the riskiest current assumption until agency APIs, data ownership, data accuracy, duplicate-funding detection, and maintenance costs are validated.
-- Readiness scores are prototype guidance, not formal approval criteria; real launch decisions require agency and data-owner review.
-- File upload is visual only in this prototype and does not store files.
+- Google, ThaiD, ทางรัฐ และ NDID เป็นปุ่มสาธิต ไม่ยืนยันตัวบุคคลจริง
+- จำนวนผู้สมัครและรอบที่ติดป้ายว่า “ตัวอย่าง” เป็นข้อมูลจำลอง
+- Readiness ตรวจเฉพาะ presence/completeness ของหัวข้อและไฟล์ตามแม่แบบ ไม่ตรวจ Problem, Desirability, Usability, Feasibility หรือ Viability
+- Semantic Checker ไม่บล็อกการส่ง ผู้ยื่นต้องติ๊กรับทราบก่อนยืนยันไปต่อ
+- รหัสรับเรื่องเป็นตัวอย่างแยกตามแหล่งทุน
+- Email preview ไม่ส่งอีเมลจริง และส่งสำเนาให้ผู้ลงทะเบียนเมื่อเป็นการยื่นแทน
 
-## Open Decisions
+## Go-live Decisions
 
-- Which real agencies and fund programs launch first.
-- Whether the first pilot uses public sign-in, invited SME accounts, or agency-managed access.
-- Whether shared data should use Postgres, Cloudflare D1, or an existing government data platform.
-- Who owns review status changes and applicant support after launch.
+- หน่วยงานใดเป็นเจ้าของรายการทุนและแม่แบบฉบับล่าสุด
+- วิธีพิสูจน์สิทธิ์ของผู้ลงทะเบียนแทนและการอนุมัติจากนักวิจัย
+- Google Workspace/OAuth tenant, ฐานข้อมูล, ที่เก็บไฟล์ และผู้ให้บริการอีเมล
+- ผู้รับผิดชอบเปลี่ยนสถานะ ออกเลขรับเรื่อง และแก้ไขข้อมูลทุน

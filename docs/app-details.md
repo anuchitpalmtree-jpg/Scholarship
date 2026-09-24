@@ -1,54 +1,32 @@
-# GovFund Match Operating Details
+# Grant+ Operating Details
 
-## Record Definitions
+## Records
 
-| Record | Fields in current app | Notes |
-| --- | --- | --- |
-| Applicant profile | Name, company, registration number, address | Stored as starter data in `src/data/govfund-demo-data.ts` |
-| Fund | ID, title, agency, match score, tags | Used to render recommendation cards |
-| Application | Project title, fund, status, date, progress, tone | Used to render the status dashboard |
-| Readiness assessment | Dimension, assumption question, base score, risk level, evidence checklist, note | Prototype state is local to the current browser session |
-| Data dependency | Source, purpose, mock readiness state | Highlights integrations that need agency confirmation |
-
-## Status Values
-
-| Status | Meaning | Display |
-| --- | --- | --- |
-| กำลังพิจารณา (Under Review) | Agency is reviewing the application | Amber badge and progress bar |
-| ขอเอกสารเพิ่มเติม (Action Required) | Applicant must provide more information | Red badge and progress bar |
-
-Future status values should include draft, submitted, eligibility check, approved, rejected, paid, and closed.
-
-## Calculations And Display Rules
-
-- Highest match score is calculated from the available fund list.
-- Action-required count is calculated from applications marked with the red status tone.
-- Match badges are green at 90% or higher, blue at 70-89%, and gray below 70%.
-- Progress bars are visual only and do not currently calculate from workflow timestamps.
-- Overall readiness is the percentage of completed evidence items across all five dimensions.
-- Dimension base scores communicate workshop prioritization; they do not change dynamically and are not government approval scores.
-- Feasibility remains the highest-priority risk until cross-agency APIs, data quality, duplicate-funding detection, and maintenance ownership are validated.
-
-## Seed And Demo Data
-
-Starter data is intentionally realistic but not real personal data. Keep it in `src/data` until shared persistence is added.
-
-## Imports, Exports, And Files
-
-- PDF upload is a visual prototype only.
-- No imports or exports are implemented yet.
-- A pilot should add PDF storage, antivirus/content checks, file size limits, and downloadable review packets.
-
-## Ownership And Support
-
-| Area | Suggested owner for pilot |
+| รายการ | ข้อมูลที่แสดงใน prototype |
 | --- | --- |
-| Fund catalog and eligibility wording | Government program owner |
-| Applicant support | One-stop service operations team |
-| Matching rules | Product owner with agency representatives |
-| Data access and privacy | Security and compliance owner |
-| Technical maintenance | Web app maintainer |
+| Identity context | บทบาท ชื่อ/อีเมลผู้ลงทะเบียน ชื่อ/อีเมลผู้วิจัย และหน่วยงาน |
+| Public grant | ชื่อทุน หน่วยงาน สรุป ช่วงเปิดรับ จำนวนผู้สมัครจำลอง ภาพประกอบ tag และลิงก์ต้นทาง |
+| Fund template | แหล่งทุน รุ่นแม่แบบ URL ต้นทาง และหัวข้อที่ต้องมีพร้อมสถานะครบ/บางส่วน/ไม่พบ |
+| Application | โครงการ แหล่งทุน วันที่ยื่น วันที่รับเรื่อง รหัสรับเรื่อง สถานะ และเนื้อหาอีเมล |
 
-## Support Expectations
+## Readiness Calculation
 
-Before a real pilot, define who answers applicant questions, who corrects bad fund data, who handles document requests, and who can change status values.
+- “ครบ” คิด 1 คะแนน “มีบางส่วน” คิด 0.5 คะแนน และ “ยังไม่พบ” คิด 0 คะแนน
+- เปอร์เซ็นต์เป็นตัวชี้ความครบของข้อเสนอเทียบกับ template ที่เลือก ไม่ใช่โอกาสได้รับทุน
+- รายการสาธิตมีแม่แบบ วช. Strategic Fund, NIA Open Innovation และ บพข. Full Proposal
+- แหล่งอ้างอิงใน prototype ใช้หน้าคู่มือ/ประกาศของ NRIIS, NIA และ บพข.; ก่อนใช้งานจริงต้องให้เจ้าของทุนตรวจและอัปเดตรุ่นแม่แบบ
+
+## Status And Notifications
+
+| สถานะ | การแสดงผล | Mock email |
+| --- | --- | --- |
+| กำลังพิจารณา | ป้ายสีเหลือง พร้อมวันที่และรหัสรับเรื่อง | แจ้งว่าแหล่งทุนรับเรื่องแล้ว |
+| ขอเอกสารเพิ่ม | ป้ายสีแดง | แจ้งรายการที่ต้องส่งและกำหนดเวลา |
+
+เมื่อผู้ประสานงานยื่นแทน อีเมลหลักแสดงผู้วิจัยและสำเนาผู้ลงทะเบียน ระบบจริงต้องเก็บ event history, ผู้เปลี่ยนสถานะ, เวลา, template อีเมล และ delivery result
+
+## Demo Data And Media
+
+- ข้อมูลบุคคล เลขทะเบียน วันที่ รหัสรับเรื่อง และจำนวนผู้สมัครเป็นข้อมูลตัวอย่าง
+- ภาพ `public/grants/*.jpg` สร้างสำหรับ prototype นี้ด้วยเครื่องมือสร้างภาพ ไม่ใช่ภาพข่าวของหน่วยงาน
+- ไฟล์อัปโหลด การจับคู่ AI การยืนยันตัวตน และการส่งอีเมลเป็น visual interaction เท่านั้น

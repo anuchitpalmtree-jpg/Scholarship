@@ -1,4 +1,4 @@
-# GovFund Match Deployment Notes
+# Grant+ Deployment Notes
 
 ## Current Launch State
 
@@ -11,16 +11,17 @@
 
 ## Required Environment Values
 
-No real environment values are required for the current frontend-only demo.
+No real environment values are required for the current frontend-only demo. The Google button, identity roles, application receipt, and email notification are mocked.
 
 Future shared-data launch should add an ignored `.env` and a committed `.env.example` documenting:
 
 | Value | Purpose |
 | --- | --- |
 | `DATABASE_URL` or `POSTGRES_URL` | Hosted database connection |
+| `GOOGLE_CLIENT_ID` and server-side OAuth values | Google sign-in and approved domains |
 | File storage bucket binding or URL | Proposal and pitch deck storage |
 | AI service key or managed matching endpoint | Smart Match recommendations |
-| Notification service values | Applicant and officer notifications |
+| Notification service values | Researcher, coordinator, and officer notifications |
 
 Never commit real secrets.
 
@@ -38,9 +39,10 @@ For a pilot:
 
 ## Access Setup
 
-Current access is a mock NDID button. A real launch needs:
+Current access is a mock Google/government sign-in. A real launch needs:
 
 - Applicant sign-in policy.
+- Delegated-submission policy, researcher consent, and audit history separating the researcher from the registrant.
 - Agency reviewer access.
 - View-only leadership access.
 - Administrator access for catalog and support changes.

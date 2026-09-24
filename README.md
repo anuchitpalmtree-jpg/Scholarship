@@ -1,13 +1,15 @@
-# GovFund Match
+# Grant+ ทุนที่ใช่ ไปได้ไกลกว่า
 
-GovFund Match is a frontend business-app prototype for a Thai government funding one-stop service. It helps Thai citizens and SMEs sign in with a mock NDID flow, describe an innovation project, receive suggested government funds, submit a pre-filled application, and track application status.
+Grant+ เป็น frontend business-app prototype สำหรับค้นหาทุนวิจัย ตรวจความครบของข้อเสนอ ยื่นใบสมัคร และติดตามการรับเรื่องของแต่ละแหล่งทุน โดยรองรับกรณีผู้ประสานงานลงทะเบียนแทนนักวิจัย
 
 ## Current Scope
 
-- Frontend demo with realistic starter data.
-- NDID mock login, AI Smart Match, auto-filled application form, success dialog, and status dashboard.
-- Business-app structure under `src/` with docs for owners and future maintainers.
-- Private Sites deployment metadata in `.openai/hosting.json`.
+- หน้า public แสดงตัวอย่างทุนที่เปิดรับแบบภาพเลื่อน พร้อมรายละเอียด ลิงก์ต้นทาง และจำนวนผู้สมัครจำลอง
+- Mock Google/government sign-in ที่แยก “ผู้วิจัย” ออกจาก “ผู้ลงทะเบียน”
+- AI Smart Match และแบบฟอร์มที่เติมข้อมูลสาธิต
+- Readiness check ที่ตรวจเฉพาะหัวข้อและเอกสารตามแม่แบบของ วช., NIA และ บพข.
+- Semantic Checker แบบแจ้งเตือนและให้ผู้สมัครยืนยันไปต่อ
+- ตารางติดตามวันที่กองทุนรับเรื่อง รหัสรับเรื่อง และตัวอย่างอีเมลเมื่อสถานะเปลี่ยน
 
 ## Useful Commands
 
@@ -18,18 +20,6 @@ npm run build
 npm test
 ```
 
-## Project Shape
-
-- `src/app`: page, layout, and global styles.
-- `src/components/govfund`: GovFund Match screens and workflow pieces.
-- `src/components/ui`: shared accessible interface pieces.
-- `src/data`: demo and starter data.
-- `src/types`: business record shapes.
-- `src/lib`: display rules and shared calculations.
-- `src/db`: database connection and schema placeholders.
-- `db/migrations`: generated database migrations when persistence is added.
-- `docs`: business specification, operating details, launch notes, and change log.
-
 ## Demo Notes
 
-The app currently uses local component state and starter data. A production pilot should add a shared database, real identity/access rules, upload storage, exportable reports, and agency review workflows before handling real applicant information.
+ระบบใช้ข้อมูลตัวอย่างและ local component state เท่านั้น ภาพประกอบใน `public/grants` สร้างขึ้นสำหรับ prototype นี้ จำนวนผู้สมัครและช่วงเวลาที่ระบุว่าเป็นตัวอย่างไม่ใช่ข้อมูลสด ระบบยังไม่เชื่อม Google OAuth, ฐานข้อมูลร่วม, ที่เก็บไฟล์, หรือบริการส่งอีเมลจริง

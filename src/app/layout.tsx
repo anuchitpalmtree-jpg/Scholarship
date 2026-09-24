@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GovFund Match",
+  title: "Grant+ ทุนที่ใช่ ไปได้ไกลกว่า",
   description:
-    "A One-Stop Service frontend mockup for Thai citizens and SMEs to find and apply for government innovation and research funds.",
+    "ต้นแบบศูนย์รวมทุนวิจัยสำหรับค้นหาทุน ตรวจความครบของข้อเสนอ ยื่นใบสมัคร และติดตามสถานะ",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
