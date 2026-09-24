@@ -1,5 +1,11 @@
 # Grant+ Change Log
 
+## 2026-09-24 — Brand identity
+
+- Designed a modern Grant+ vector mark combining growth bars, an upward path, and a plus sign.
+- Added full, compact, light, and dark logo lockups for the public landing page, application sidebar, and every signed-in page header.
+- Replaced the generic favicon with the Grant+ mark and added a reusable full SVG logo asset.
+
 ## 2026-09-24
 
 - Renamed the system to “Grant+ ทุนที่ใช่ ไปได้ไกลกว่า”.

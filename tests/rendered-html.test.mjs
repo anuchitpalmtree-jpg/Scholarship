@@ -55,6 +55,10 @@ test("keeps the requested Grant+ workflows and mock data in source", async () =>
     new URL("../src/data/govfund-demo-data.ts", import.meta.url),
     "utf8",
   );
+  const brand = await readFile(
+    new URL("../src/components/govfund/GrantPlusBrand.tsx", import.meta.url),
+    "utf8",
+  );
 
   assert.match(page, /GovFundMatchApp/);
   assert.match(prototype, /เข้าสู่ระบบด้วย Google/);
@@ -68,6 +72,10 @@ test("keeps the requested Grant+ workflows and mock data in source", async () =>
   assert.match(data, /NIA-REG70-00182/);
   assert.match(data, /receivedDate/);
   assert.match(data, /ใบสมัครตัวอย่าง/);
+  assert.match(brand, /GrantPlusMark/);
+  assert.match(brand, /ทุนที่ใช่ ไปได้ไกลกว่า/);
+  assert.match(prototype, /GrantPlusBrand size="hero"/);
+  assert.match(prototype, /GrantPlusMark className="h-10 w-10 shrink-0"/);
   assert.match(layout, /lang="th"/);
   assert.doesNotMatch(layout, /Starter Project|codex-preview|_sites-preview/);
 });

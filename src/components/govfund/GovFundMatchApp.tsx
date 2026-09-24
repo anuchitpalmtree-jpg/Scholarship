@@ -45,6 +45,7 @@ import {
   matchedFunds,
   publicGrants,
 } from "@/src/data/govfund-demo-data";
+import { GrantPlusBrand, GrantPlusMark } from "@/src/components/govfund/GrantPlusBrand";
 import type {
   ApplicationHistory,
   IdentityContext,
@@ -128,10 +129,7 @@ function Landing({ onLogin }: { onLogin: (identity: IdentityContext) => void }) 
     <main className="min-h-screen bg-slate-50 text-slate-950">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-xl bg-[#1E3A8A] text-white shadow-sm"><Landmark size={23} /></div>
-            <div><p className="text-xl font-black tracking-tight text-[#1E3A8A]">Grant+</p><p className="text-xs font-semibold text-slate-500">ทุนที่ใช่ ไปได้ไกลกว่า</p></div>
-          </div>
+          <GrantPlusBrand size="sm" />
           <div className="hidden items-center gap-2 text-sm font-semibold text-slate-500 sm:flex"><ShieldCheck size={18} className="text-blue-800" /> Prototype สำหรับสาธิต</div>
         </div>
       </header>
@@ -140,7 +138,8 @@ function Landing({ onLogin }: { onLogin: (identity: IdentityContext) => void }) 
         <div>
           <div className="max-w-3xl">
             <p className="text-sm font-bold tracking-[0.16em] text-blue-800">ONE-STOP RESEARCH FUNDING</p>
-            <h1 className="mt-3 text-4xl font-black leading-tight tracking-tight text-slate-950 sm:text-5xl">Grant+ <span className="text-[#1E3A8A]">ทุนที่ใช่<br />ไปได้ไกลกว่า</span></h1>
+            <h1 className="sr-only">Grant+ ทุนที่ใช่ ไปได้ไกลกว่า</h1>
+            <GrantPlusBrand size="hero" className="mt-4" />
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">ค้นหาทุน ตรวจความครบของข้อเสนอ ยื่นใบสมัคร และติดตามการรับเรื่องของแต่ละแหล่งทุนจากจุดเดียว</p>
           </div>
 
@@ -289,7 +288,7 @@ export function GovFundMatchApp() {
     <div className="min-h-screen bg-slate-100 text-slate-900">
       {mobileMenu && <button type="button" aria-label="ปิดเมนู" onClick={() => setMobileMenu(false)} className="fixed inset-0 z-30 bg-slate-950/40 lg:hidden" />}
       <aside className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col bg-blue-950 text-white transition-transform lg:translate-x-0 ${mobileMenu ? "translate-x-0" : "-translate-x-full"}`}>
-        <div className="flex h-20 items-center gap-3 border-b border-white/10 px-6"><div className="grid h-10 w-10 place-items-center rounded-xl bg-white text-blue-900"><Landmark size={22} /></div><div><p className="text-lg font-black">Grant+</p><p className="text-xs text-blue-200">ทุนที่ใช่ ไปได้ไกลกว่า</p></div><button type="button" onClick={() => setMobileMenu(false)} className="ml-auto lg:hidden" aria-label="ปิดเมนู"><X /></button></div>
+        <div className="flex h-20 items-center border-b border-white/10 px-5"><GrantPlusBrand size="sm" theme="dark" /><button type="button" onClick={() => setMobileMenu(false)} className="ml-auto lg:hidden" aria-label="ปิดเมนู"><X /></button></div>
         <nav className="flex-1 space-y-1 p-4" aria-label="เมนูหลัก">{navItems.map(({ id, label, icon: Icon }) => <button key={id} type="button" onClick={() => navigate(id)} className={`flex min-h-12 w-full items-center gap-3 rounded-lg px-4 text-left font-semibold transition ${screen === id ? "bg-white text-blue-950" : "text-blue-100 hover:bg-white/10"}`}><Icon size={20} />{label}</button>)}</nav>
         <div className="border-t border-white/10 p-4">
           <div className="rounded-xl bg-white/5 p-3">
@@ -303,7 +302,7 @@ export function GovFundMatchApp() {
       <div className="lg:pl-72">
         <header className="sticky top-0 z-20 flex h-20 items-center border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8">
           <button type="button" onClick={() => setMobileMenu(true)} className="mr-3 rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden" aria-label="เปิดเมนู"><Menu /></button>
-          <div><p className="text-xs font-black text-blue-800">GRANT+</p><h1 className="text-lg font-bold sm:text-xl">{pageTitle}</h1></div>
+          <div className="flex min-w-0 items-center gap-3"><GrantPlusMark className="h-10 w-10 shrink-0" /><div className="min-w-0"><div className="flex items-center gap-2"><p className="text-sm font-black tracking-tight text-blue-900">Grant<span className="text-cyan-600">+</span></p><span className="hidden text-xs font-semibold text-slate-400 xl:inline">ทุนที่ใช่ ไปได้ไกลกว่า</span></div><h1 className="truncate text-base font-bold sm:text-xl">{pageTitle}</h1></div></div>
           <div className="relative ml-auto"><button type="button" onClick={() => setNotificationsOpen((open) => !open)} className="relative grid h-11 w-11 place-items-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50" aria-label="การแจ้งเตือน" aria-expanded={notificationsOpen}><Bell size={21} /><span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-600" /></button>{notificationsOpen && <div className="absolute right-0 mt-2 w-[min(23rem,calc(100vw-2rem))] rounded-xl border border-slate-200 bg-white p-4 shadow-xl"><div className="flex items-center justify-between"><p className="font-bold">การแจ้งเตือน</p><span className="rounded-full bg-red-50 px-2 py-1 text-xs font-bold text-red-700">ใหม่</span></div><button type="button" onClick={() => { setEmailItem(applicationHistory[1]); setNotificationsOpen(false); }} className="mt-3 w-full rounded-lg bg-blue-50 p-4 text-left text-sm leading-6 text-slate-700 hover:bg-blue-100"><span className="font-bold text-blue-900">สถานะเปลี่ยนเป็น “ขอเอกสารเพิ่ม”</span><br />ระบบเตรียมอีเมลแจ้งผู้วิจัยและผู้ลงทะเบียนแล้ว</button></div>}</div>
         </header>
 
