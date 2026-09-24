@@ -17,8 +17,9 @@ export const metadata: Metadata = {
   description:
     "ต้นแบบศูนย์รวมทุนวิจัยสำหรับค้นหาทุน ตรวจความครบของข้อเสนอ ยื่นใบสมัคร และติดตามสถานะ",
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+    icon: "/grant-plus-researcher-logo.png",
+    shortcut: "/grant-plus-researcher-logo.png",
+    apple: "/grant-plus-researcher-logo.png",
   },
 };
 

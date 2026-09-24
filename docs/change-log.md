@@ -2,9 +2,9 @@
 
 ## 2026-09-24 — Brand identity
 
-- Designed a modern Grant+ vector mark combining growth bars, an upward path, and a plus sign.
+- Replaced the abstract mark with the approved modern researcher logo: two scientists in lab coats, an endorsed grant document, and a lightbulb representing a funded idea ready to move forward.
 - Added full, compact, light, and dark logo lockups for the public landing page, application sidebar, and every signed-in page header.
-- Replaced the generic favicon with the Grant+ mark and added a reusable full SVG logo asset.
+- Reused the approved logo artwork for the public landing page, signed-in navigation, page header, and browser icon.
 
 ## 2026-09-24
 

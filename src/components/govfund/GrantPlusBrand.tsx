@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 type GrantPlusBrandProps = {
   size?: "sm" | "md" | "hero";
   theme?: "light" | "dark";
@@ -7,22 +9,19 @@ type GrantPlusBrandProps = {
 
 export function GrantPlusMark({ className = "h-12 w-12" }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 64 64"
+    <span
       role="img"
-      aria-label="สัญลักษณ์ Grant+"
-      className={className}
-      xmlns="http://www.w3.org/2000/svg"
+      aria-label="โลโก้ Grant+ นักวิจัยพร้อมเอกสารทุนและประกายไอเดีย"
+      className={`relative inline-block overflow-hidden rounded-[24%] bg-white ring-1 ring-blue-100/80 ${className}`}
     >
-      <rect width="64" height="64" rx="17" fill="#1E3A8A" />
-      <path d="M14 47.5h36" stroke="#93C5FD" strokeWidth="2" strokeLinecap="round" opacity=".55" />
-      <rect x="15" y="36" width="8" height="12" rx="4" fill="white" />
-      <rect x="27" y="28" width="8" height="20" rx="4" fill="white" />
-      <rect x="39" y="20" width="8" height="28" rx="4" fill="white" />
-      <path d="M16 30c8.1-8.3 16.1-11.8 27.6-12.2" stroke="#67E8F9" strokeWidth="4" strokeLinecap="round" />
-      <path d="m39.5 13.7 6.7 3.7-5.8 5" fill="none" stroke="#67E8F9" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M50 10v10M45 15h10" stroke="white" strokeWidth="3.4" strokeLinecap="round" />
-    </svg>
+      <Image
+        src="/grant-plus-researcher-logo.png"
+        alt=""
+        fill
+        sizes="(max-width: 640px) 112px, 144px"
+        className="object-contain"
+      />
+    </span>
   );
 }
 
@@ -33,13 +32,13 @@ export function GrantPlusBrand({
   className = "",
 }: GrantPlusBrandProps) {
   const isDark = theme === "dark";
-  const markSize = size === "hero" ? "h-20 w-20 sm:h-24 sm:w-24" : size === "md" ? "h-14 w-14" : "h-11 w-11";
-  const nameSize = size === "hero" ? "text-5xl sm:text-6xl" : size === "md" ? "text-3xl" : "text-xl";
+  const markSize = size === "hero" ? "h-28 w-28 sm:h-36 sm:w-36" : size === "md" ? "h-16 w-16" : "h-12 w-12";
+  const nameSize = size === "hero" ? "text-4xl sm:text-6xl" : size === "md" ? "text-3xl" : "text-xl";
   const taglineSize = size === "hero" ? "mt-1.5 text-base sm:text-lg" : size === "md" ? "mt-1 text-sm" : "text-xs";
 
   return (
     <div className={`inline-flex items-center gap-3 ${size === "hero" ? "sm:gap-5" : ""} ${className}`}>
-      <GrantPlusMark className={`${markSize} shrink-0 drop-shadow-sm`} />
+      <GrantPlusMark className={`${markSize} shrink-0 shadow-sm`} />
       <div className="min-w-0">
         <div className={`${nameSize} font-black leading-none tracking-[-0.05em] ${isDark ? "text-white" : "text-[#102A68]"}`}>
           Grant<span className={isDark ? "text-cyan-300" : "text-cyan-600"}>+</span>
