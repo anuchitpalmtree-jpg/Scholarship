@@ -4,14 +4,14 @@
 
 | Path | Status | Notes |
 | --- | --- | --- |
-| Local demo | Ready | Run `npm run dev` and open the local URL |
-| Private hosted demo | Prepared | Uses Sites metadata in `.openai/hosting.json` |
+| Local demo | Ready | Run `npm run dev`; Simulation และ local browser storage ใช้งานได้ |
+| Private hosted demo | Prepared | Uses Sites metadata in `.openai/hosting.json`; saved data remains browser-local |
 | Internal pilot | Not ready | Needs shared data, access setup, file storage, review ownership |
 | Production | Not ready | Needs security, privacy, monitoring, backups, real agency workflows |
 
 ## Required Environment Values
 
-No real environment values are required for the current frontend-only demo. The Google button, identity roles, application receipt, and email notification are mocked.
+No real environment values are required for the current frontend-only demo. โหมดกรอกข้อมูลใช้ `localStorage`; Google/government sign-in, Smart Match, file upload, agency submission, application receipt, review, result, and email notification are mocked.
 
 Future shared-data launch should add an ignored `.env` and a committed `.env.example` documenting:
 
@@ -27,7 +27,7 @@ Never commit real secrets.
 
 ## Database Setup
 
-The current app uses starter data and local component state. The database folder is prepared but contains no business tables yet.
+The current app uses starter data, local component state, and browser-local storage for data-entry mode. The database folder is prepared but contains no business tables yet.
 
 For a pilot:
 

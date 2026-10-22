@@ -1,5 +1,7 @@
 export type Screen = "dashboard" | "readiness" | "search" | "apply" | "tracking";
 
+export type AppMode = "simulation" | "data-entry";
+
 export type LoginRole = "researcher" | "coordinator";
 
 export type IdentityContext = {
@@ -65,4 +67,26 @@ export type ApplicationHistory = {
   tone: ApplicationStatusTone;
   emailSubject: string;
   emailBody: string;
+  isSimulated?: boolean;
+  source?: "demo" | "saved";
+};
+
+export type ApplicationFormData = {
+  researcher: string;
+  registrant: string;
+  registration: string;
+  address: string;
+  projectTitle: string;
+  budget: string;
+  summary: string;
+  attachmentName: string;
+};
+
+export type SavedApplication = {
+  id: string;
+  form: ApplicationFormData;
+  fundName: string;
+  savedAt: string;
+  submittedAt?: string;
+  receiptCode?: string;
 };

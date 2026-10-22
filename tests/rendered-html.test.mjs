@@ -35,6 +35,8 @@ test("server-renders the Grant+ public funding landing page", async () => {
   assert.match(html, /ข่าวสารทุนล่าสุด/);
   assert.match(html, /เข้าสู่ระบบด้วย Google/);
   assert.match(html, /ลงทะเบียนแทน/);
+  assert.match(html, /Simulation mode/);
+  assert.match(html, /โหมดกรอกและบันทึกข้อมูล/);
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
 });
 
@@ -68,7 +70,22 @@ test("keeps the requested Grant+ workflows and mock data in source", async () =>
   assert.match(prototype, /ยังไม่ให้คะแนน Problem, Desirability, Usability, Feasibility หรือ Viability/);
   assert.match(prototype, /ยืนยันและส่งต่อ/);
   assert.match(prototype, /PMU-B 80%/);
-  assert.match(prototype, /EMAIL STATUS MOCKUP/);
+  assert.match(prototype, /EMAIL STATUS SIMULATION/);
+  assert.match(prototype, /GrantProcessJourney/);
+  assert.match(prototype, /บันทึกร่างในเบราว์เซอร์/);
+  assert.match(prototype, /ส่งใบสมัคร \(Simulation\)/);
+  const journey = await readFile(
+    new URL("../src/components/govfund/GrantProcessJourney.tsx", import.meta.url),
+    "utf8",
+  );
+  const storage = await readFile(
+    new URL("../src/lib/govfund-storage.ts", import.meta.url),
+    "utf8",
+  );
+  assert.match(journey, /ผู้ทรงคุณวุฒิประเมิน/);
+  assert.match(journey, /คณะกรรมการพิจารณา/);
+  assert.match(journey, /ประกาศผลและทำสัญญา/);
+  assert.match(storage, /localStorage/);
   assert.match(data, /NIA-REG70-00182/);
   assert.match(data, /receivedDate/);
   assert.match(data, /ใบสมัครตัวอย่าง/);

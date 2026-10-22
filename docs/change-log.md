@@ -1,5 +1,13 @@
 # Grant+ Change Log
 
+## 2026-10-22 — Two operating modes
+
+- Added a pre-login choice between Simulation mode and a data-entry mode.
+- Added browser-local draft and application saving for information entered in data-entry mode.
+- Added clear labels separating saved browser data from simulated identity, AI, agency submission, review, result, and email activity.
+- Added a six-stage application journey covering submission, eligibility/document checks, expert review, committee consideration, result announcement, and contracting.
+- Added validation, draft-save feedback, attachment-name capture, saved-application tracking, and simulated status advancement.
+
 ## 2026-09-24 — Brand identity
 
 - Replaced the abstract mark with the approved modern researcher logo: two scientists in lab coats, an endorsed grant document, and a lightbulb representing a funded idea ready to move forward.
