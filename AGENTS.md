@@ -38,7 +38,7 @@ Use current official docs or installed package docs before changing App Router, 
 
 ## Deployment Assumptions
 
-This project uses the existing Sites-compatible vinext setup and `.openai/hosting.json`. Keep real secrets out of the repo. For hosted persistence, add environment examples and document the required real database/storage values before launch.
+This project uses the existing Sites-compatible vinext setup and `.openai/hosting.json`, plus Vercel hosting with a Neon PostgreSQL integration for prototype persistence. Keep real secrets out of the repo. Document required database/storage values and migration steps before launch.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

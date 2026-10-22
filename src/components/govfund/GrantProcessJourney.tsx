@@ -59,15 +59,19 @@ export function GrantProcessJourney({
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-sm font-bold text-blue-800">APPLICATION JOURNEY</p>
+            <p className="text-sm font-bold text-blue-800">
+              APPLICATION JOURNEY
+            </p>
             <span className="rounded-full bg-violet-50 px-2.5 py-1 text-xs font-bold text-violet-700">
               ขั้นตอนหลังบันทึกเป็น Simulation
             </span>
           </div>
-          <h2 className="mt-1 text-xl font-black">เส้นทางตั้งแต่กรอกข้อมูลถึงประกาศผล</h2>
+          <h2 className="mt-1 text-xl font-black">
+            เส้นทางตั้งแต่กรอกข้อมูลถึงประกาศผล
+          </h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
             {mode === "data-entry"
-              ? "เฉพาะข้อมูลที่กรอกและบันทึกในเบราว์เซอร์เป็นข้อมูลจริงของร่างนี้ ส่วนการส่งไปยังแหล่งทุน การพิจารณา และผลลัพธ์ด้านล่างเป็นการจำลอง"
+              ? "เฉพาะข้อมูลที่กรอกและบันทึกในฐานข้อมูล Grant+ เป็นข้อมูลจริงของร่างนี้ ส่วนการส่งไปยังแหล่งทุน การพิจารณา และผลลัพธ์ด้านล่างเป็นการจำลอง"
               : "ทุกขั้นตอนและข้อมูลในโหมดนี้เป็นตัวอย่างสำหรับทดลองใช้งาน ไม่ได้ส่งไปยังแหล่งทุนจริง"}
           </p>
         </div>
@@ -77,7 +81,9 @@ export function GrantProcessJourney({
           disabled={currentStage >= processSteps.length}
           className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 font-bold text-white hover:bg-violet-800 disabled:cursor-not-allowed disabled:bg-slate-300"
         >
-          {currentStage >= processSteps.length ? "จำลองครบทุกขั้นตอน" : "จำลองขั้นตอนถัดไป"}
+          {currentStage >= processSteps.length
+            ? "จำลองครบทุกขั้นตอน"
+            : "จำลองขั้นตอนถัดไป"}
           {currentStage < processSteps.length && <ChevronRight size={18} />}
         </button>
       </div>
@@ -115,13 +121,25 @@ export function GrantProcessJourney({
                 </span>
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-bold text-slate-900">{position}. {step.title}</p>
-                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide ${isRealDataStep ? "bg-emerald-100 text-emerald-700" : "bg-violet-100 text-violet-700"}`}>
+                    <p className="font-bold text-slate-900">
+                      {position}. {step.title}
+                    </p>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide ${isRealDataStep ? "bg-emerald-100 text-emerald-700" : "bg-violet-100 text-violet-700"}`}
+                    >
                       {isRealDataStep ? "บันทึกจริง" : "Simulation"}
                     </span>
                   </div>
-                  <p className="mt-1 text-sm leading-5 text-slate-500">{step.detail}</p>
-                  {current && <p className="mt-2 text-xs font-bold text-blue-800">{isRealDataStep ? "ขั้นตอนปัจจุบัน (บันทึกในเบราว์เซอร์)" : "ขั้นตอนปัจจุบัน (จำลอง)"}</p>}
+                  <p className="mt-1 text-sm leading-5 text-slate-500">
+                    {step.detail}
+                  </p>
+                  {current && (
+                    <p className="mt-2 text-xs font-bold text-blue-800">
+                      {isRealDataStep
+                        ? "ขั้นตอนปัจจุบัน (บันทึกในฐานข้อมูล)"
+                        : "ขั้นตอนปัจจุบัน (จำลอง)"}
+                    </p>
+                  )}
                 </div>
               </div>
             </li>

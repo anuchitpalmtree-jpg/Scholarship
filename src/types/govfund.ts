@@ -89,4 +89,14 @@ export type SavedApplication = {
   savedAt: string;
   submittedAt?: string;
   receiptCode?: string;
+  reviewStage?: number;
+};
+
+export type RememberedSession = {
+  rememberedEmail: string | null;
+};
+
+export type ApplicationWorkspace = {
+  applications: SavedApplication[];
+  reviewStage: number;
 };

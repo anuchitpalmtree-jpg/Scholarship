@@ -4,20 +4,19 @@
 
 | Path | Status | Notes |
 | --- | --- | --- |
-| Local demo | Ready | Run `npm run dev`; Simulation และ local browser storage ใช้งานได้ |
-| Private hosted demo | Prepared | Uses Sites metadata in `.openai/hosting.json`; saved data remains browser-local |
-| Internal pilot | Not ready | Needs shared data, access setup, file storage, review ownership |
+| Local demo | Ready | Run `npm run dev` with a development database URL |
+| Vercel prototype | Ready | Next.js app and Neon database are connected; data-entry persistence and remembered-device cookie work |
+| Private hosted demo | Prepared | Sites build metadata remains in `.openai/hosting.json`; provide a compatible database binding before using API routes there |
+| Internal pilot | Not ready | Needs real identity/access, file storage, audit trail, privacy review, backup policy, and review ownership |
 | Production | Not ready | Needs security, privacy, monitoring, backups, real agency workflows |
 
 ## Required Environment Values
 
-No real environment values are required for the current frontend-only demo. โหมดกรอกข้อมูลใช้ `localStorage`; Google/government sign-in, Smart Match, file upload, agency submission, application receipt, review, result, and email notification are mocked.
-
-Future shared-data launch should add an ignored `.env` and a committed `.env.example` documenting:
+โหมดกรอกข้อมูลต้องมีค่าฐานข้อมูลฝั่งเซิร์ฟเวอร์ โดย Vercel/Neon integration จัดการค่า production และ `.env.local` ใช้เฉพาะเครื่องพัฒนา ห้าม commit secret
 
 | Value | Purpose |
 | --- | --- |
-| `DATABASE_URL` or `POSTGRES_URL` | Hosted database connection |
+| `DATABASE_URL` หรือ `POSTGRES_URL` | การเชื่อมต่อ PostgreSQL/Neon; ต้องมีอย่างน้อยหนึ่งค่า |
 | `GOOGLE_CLIENT_ID` and server-side OAuth values | Google sign-in and approved domains |
 | File storage bucket binding or URL | Proposal and pitch deck storage |
 | AI service key or managed matching endpoint | Smart Match recommendations |
@@ -27,19 +26,17 @@ Never commit real secrets.
 
 ## Database Setup
 
-The current app uses starter data, local component state, and browser-local storage for data-entry mode. The database folder is prepared but contains no business tables yet.
+The current app uses Neon PostgreSQL for data-entry persistence. Schema lives in `src/db/schema.ts` and versioned migrations live in `db/migrations`.
 
-For a pilot:
-
-1. Confirm the shared database choice.
-2. Add applicant, fund, application, application event, and uploaded file records.
-3. Generate migrations into `db/migrations`.
-4. Run migrations in the hosted environment.
-5. Import approved starting fund data.
+1. Copy `.env.example` to an ignored local env file and provide a Neon URL.
+2. Run `npm run db:generate` after schema changes.
+3. Review the generated SQL before running `npm run db:migrate`.
+4. Ensure the Vercel project has the same database environment values before deploy.
+5. For a real pilot, add approved fund, application event, uploaded file, audit, retention, and recovery records.
 
 ## Access Setup
 
-Current access is a mock Google/government sign-in. A real launch needs:
+The remembered-device cookie is a prototype convenience flow, not proof of identity. A real launch needs:
 
 - Applicant sign-in policy.
 - Delegated-submission policy, researcher consent, and audit history separating the researcher from the registrant.

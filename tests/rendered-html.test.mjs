@@ -37,7 +37,10 @@ test("server-renders the Grant+ public funding landing page", async () => {
   assert.match(html, /ลงทะเบียนแทน/);
   assert.match(html, /Simulation mode/);
   assert.match(html, /โหมดกรอกและบันทึกข้อมูล/);
-  assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
+  assert.doesNotMatch(
+    html,
+    /codex-preview|SkeletonPreview|react-loading-skeleton/,
+  );
 });
 
 test("keeps the requested Grant+ workflows and mock data in source", async () => {
@@ -61,31 +64,53 @@ test("keeps the requested Grant+ workflows and mock data in source", async () =>
     new URL("../src/components/govfund/GrantPlusBrand.tsx", import.meta.url),
     "utf8",
   );
+  const schema = await readFile(
+    new URL("../src/db/schema.ts", import.meta.url),
+    "utf8",
+  );
+  const session = await readFile(
+    new URL("../src/lib/grant-session.ts", import.meta.url),
+    "utf8",
+  );
+  const applicationsRoute = await readFile(
+    new URL("../src/app/api/applications/route.ts", import.meta.url),
+    "utf8",
+  );
 
   assert.match(page, /GovFundMatchApp/);
   assert.match(prototype, /เข้าสู่ระบบด้วย Google/);
   assert.match(prototype, /ผู้วิจัยเจ้าของข้อเสนอ/);
   assert.match(prototype, /ผู้ลงทะเบียน\/ผู้ประสานงาน/);
   assert.match(prototype, /ตรวจสอบความพร้อมในการยื่นขอทุน/);
-  assert.match(prototype, /ยังไม่ให้คะแนน Problem, Desirability, Usability, Feasibility หรือ Viability/);
+  assert.match(
+    prototype,
+    /Problem,\s+Desirability, Usability, Feasibility หรือ Viability/,
+  );
   assert.match(prototype, /ยืนยันและส่งต่อ/);
   assert.match(prototype, /PMU-B 80%/);
   assert.match(prototype, /EMAIL STATUS SIMULATION/);
   assert.match(prototype, /GrantProcessJourney/);
-  assert.match(prototype, /บันทึกร่างในเบราว์เซอร์/);
+  assert.match(prototype, /บันทึกร่างลงฐานข้อมูล/);
+  assert.match(prototype, /เข้าใช้งานด้วยอีเมล/);
   assert.match(prototype, /ส่งใบสมัคร \(Simulation\)/);
   const journey = await readFile(
-    new URL("../src/components/govfund/GrantProcessJourney.tsx", import.meta.url),
-    "utf8",
-  );
-  const storage = await readFile(
-    new URL("../src/lib/govfund-storage.ts", import.meta.url),
+    new URL(
+      "../src/components/govfund/GrantProcessJourney.tsx",
+      import.meta.url,
+    ),
     "utf8",
   );
   assert.match(journey, /ผู้ทรงคุณวุฒิประเมิน/);
   assert.match(journey, /คณะกรรมการพิจารณา/);
   assert.match(journey, /ประกาศผลและทำสัญญา/);
-  assert.match(storage, /localStorage/);
+  assert.match(schema, /grant_users/);
+  assert.match(schema, /grant_sessions/);
+  assert.match(schema, /grant_applications/);
+  assert.match(session, /httpOnly: true/);
+  assert.match(session, /sameSite: "lax"/);
+  assert.match(session, /SESSION_SECONDS = 60 \* 60 \* 24 \* 30/);
+  assert.match(applicationsRoute, /requireRememberedUser/);
+  assert.doesNotMatch(prototype, /localStorage/);
   assert.match(data, /NIA-REG70-00182/);
   assert.match(data, /receivedDate/);
   assert.match(data, /ใบสมัครตัวอย่าง/);

@@ -1,10 +1,18 @@
 # Grant+ Change Log
 
+## 2026-10-22 — Shared database and remembered device
+
+- Added Neon PostgreSQL tables and migrations for user profiles, hashed sessions, and saved applications.
+- Moved data-entry drafts, submissions, and simulated review position from browser storage to server APIs backed by the database.
+- Added a 30-day HttpOnly remembered-device cookie; returning users on the same device can enter only their email to resume.
+- Added “forget this device,” database loading/error states, and updated operating/deployment documentation.
+- Kept external identity verification, AI, agency submission, review decisions, results, file upload, and email delivery explicitly simulated.
+
 ## 2026-10-22 — Two operating modes
 
 - Added a pre-login choice between Simulation mode and a data-entry mode.
-- Added browser-local draft and application saving for information entered in data-entry mode.
-- Added clear labels separating saved browser data from simulated identity, AI, agency submission, review, result, and email activity.
+- Initially added browser-local draft and application saving; this was replaced later the same day by Neon-backed persistence.
+- Added clear labels separating persisted applicant data from simulated identity, AI, agency submission, review, result, and email activity.
 - Added a six-stage application journey covering submission, eligibility/document checks, expert review, committee consideration, result announcement, and contracting.
 - Added validation, draft-save feedback, attachment-name capture, saved-application tracking, and simulated status advancement.
 
