@@ -1,5 +1,15 @@
 # Grant+ Change Log
 
+## 2026-11-05 — Funder portfolio, contracts, and researcher directory
+
+- Renamed the public/private funding portal to Funder Hub at `/funder`, redirecting the old URL and preserving logout-only Hub changes.
+- Added research search, name/funder sorting, field/funder filters and record details.
+- Added cross-funder allocations by primary national strategy, year/funder filters, project drill-down and separate disbursement totals.
+- Added editable grant contracts, installment schedules, recipient contract tracking and simulated payments with amount/date/duplicate-payment validation.
+- Added the Researcher Hub directory grouped by field, keyword search and profile/project details.
+- Preserved challenge/matching/co-funding/marketplace workflows; merged snapshot updates to retain contracts while navigating.
+- New research, profiles, strategy assignments and financial values are synthetic. No database migration or real financial operation is added.
+
 ## 2026-10-22 — Shared database and remembered device
 
 - Added Neon PostgreSQL tables and migrations for user profiles, hashed sessions, and saved applications.

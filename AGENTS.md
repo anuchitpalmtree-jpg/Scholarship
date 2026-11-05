@@ -6,6 +6,11 @@ Grant+ — “ทุนที่ใช่ ไปได้ไกลกว่า�
 
 ## Business Rules To Preserve
 
+- Three independent portals: Funder Hub (`/funder`, public and private funders), Researcher Hub (`/researcher`), and Collaboration (`/collaboration`). `/private-sector` redirects to `/funder`; changing Hub requires logout and Admin stays separate.
+- One allocated project is one grant, counted under exactly one primary national strategy. Keep allocation and disbursement totals separate; a payment never increases the allocated budget.
+- One funded project has one contract in this demo. Installments sum to its allocated amount. Preserve paid installments and evidence, and reject duplicate installment payments.
+- New research, researcher and contract records are synthetic. Contract updates survive client navigation/logout in the same tab, but reset on refresh. Demo snapshot updates must merge fields to retain other modules' records.
+
 - Keep the primary palette anchored on Trust Blue `#1E3A8A` with clean white and gray backgrounds.
 - The public first experience must show useful open-fund news and a clear route to login, not a marketing-only landing page.
 - Readiness checks only content and document completeness against each fund template; it does not score Problem, Desirability, Usability, Feasibility, or Viability.

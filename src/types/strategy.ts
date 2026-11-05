@@ -1,5 +1,7 @@
-export type StrategyScreen = "corporate" | "governance" | "semantic" | "marketplace" | "impact" | "integration" | "collaboration";
-export type WorkspaceHub = "private" | "researcher" | "collaboration";
+export type LegacyStrategyScreen = "corporate" | "governance" | "semantic" | "marketplace" | "impact" | "integration" | "collaboration";
+export type PortfolioScreen = "funding" | "research-library" | "contracts" | "researchers";
+export type StrategyScreen = LegacyStrategyScreen | PortfolioScreen;
+export type WorkspaceHub = "funder" | "researcher" | "collaboration";
 
 export type IndustryChallenge = {
   id: string;

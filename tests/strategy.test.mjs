@@ -14,10 +14,13 @@ const navigationSource = compile(await readFile(new URL("../src/lib/hub-navigati
 const { canEnterHub, hubConfig } = await import(`data:text/javascript;base64,${Buffer.from(navigationSource).toString("base64")}`);
 
 test("a signed-in Hub cannot enter a different Hub until logout", () => {
-  const hubs = ["private", "researcher", "collaboration"];
+  const hubs = ["funder", "researcher", "collaboration"];
   for (const active of hubs) for (const requested of hubs) assert.equal(canEnterHub(active, requested), active === requested);
   for (const requested of hubs) assert.equal(canEnterHub(null, requested), true);
-  assert.ok(!hubConfig("private").screens.includes("collaboration"));
+  assert.ok(!hubConfig("funder").screens.includes("collaboration"));
+  assert.ok(hubConfig("funder").screens.includes("contracts"));
+  assert.ok(!hubConfig("researcher").screens.includes("contracts"));
+  assert.ok(hubConfig("researcher").screens.includes("researchers"));
   assert.ok(!hubConfig("collaboration").screens.includes("marketplace"));
 });
 

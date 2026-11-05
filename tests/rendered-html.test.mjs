@@ -33,7 +33,9 @@ test("server-renders the Grant+ public funding landing page", async () => {
   assert.match(html, /Grant\+/);
   assert.match(html, /ทุนที่ใช่/);
   assert.match(html, /ข่าวสารทุนล่าสุด/);
-  assert.match(html, /href="\/private-sector"/);
+  assert.match(html, /href="\/funder"/);
+  assert.match(html, /Funder Hub/);
+  assert.doesNotMatch(html, /Private Sector Hub/);
   assert.match(html, /href="\/researcher"/);
   assert.match(html, /href="\/collaboration"/);
   assert.doesNotMatch(html, /เปลี่ยนพื้นที่สาธิต/);
@@ -44,7 +46,7 @@ test("server-renders the Grant+ public funding landing page", async () => {
 });
 
 test("each Hub has its own sign-in page without a Hub switcher", async () => {
-  for (const [path, heading] of [["/private-sector", "PRIVATE SECTOR SIGN IN"], ["/researcher", "RESEARCHER HUB"], ["/collaboration", "COLLABORATION SIGN IN"]]) {
+  for (const [path, heading] of [["/funder", "FUNDER SIGN IN"], ["/researcher", "RESEARCHER HUB"], ["/collaboration", "COLLABORATION SIGN IN"]]) {
     const response = await render(path);
     assert.equal(response.status, 200);
     const html = await response.text();
@@ -56,6 +58,12 @@ test("each Hub has its own sign-in page without a Hub switcher", async () => {
       assert.match(html, /Simulation mode/);
     } else assert.doesNotMatch(html, /เข้าสู่ระบบด้วย Google|ลงทะเบียนแทน/);
   }
+});
+
+test("old private-sector links redirect to Funder Hub", async () => {
+  const response = await render("/private-sector");
+  assert.equal(response.status, 307);
+  assert.equal(response.headers.get("location"), "/funder");
 });
 
 test("technical integration and cost subpages are separate Admin routes", async () => {

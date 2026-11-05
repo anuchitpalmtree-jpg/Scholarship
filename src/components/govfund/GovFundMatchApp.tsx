@@ -58,7 +58,8 @@ import {
 } from "@/src/components/govfund/GrantPlusBrand";
 import { PublicChallenges, StrategyWorkspace } from "@/src/components/govfund/StrategyWorkspace";
 import { compareSemantic } from "@/src/lib/strategy-demo";
-import type { DemoNotice, StrategyScreen, WorkspaceHub } from "@/src/types/strategy";
+import type { DemoNotice, LegacyStrategyScreen, WorkspaceHub } from "@/src/types/strategy";
+import { PortfolioWorkspace } from "@/src/components/govfund/PortfolioWorkspace";
 import { canEnterHub, hubConfig } from "@/src/lib/hub-navigation";
 import {
   GrantProcessJourney,
@@ -784,7 +785,7 @@ export function GovFundMatchApp({ hub }: { hub: WorkspaceHub }) {
   const [chatOpen, setChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState("");
   const [chatMessages, setChatMessages] = useState([
-    hub === "private" ? "ผมช่วยสรุปโจทย์ ความเชี่ยวชาญที่ต้องการ และข้อมูลเทคโนโลยีตัวอย่างได้" : hub === "collaboration" ? "ผมช่วยแนะนำรายการงวดงานและประเด็นที่ต้องหารือในห้องโครงการตัวอย่างได้" : "สวัสดีครับ ผมช่วยตรวจสอบเงื่อนไขทุนและเอกสารที่ต้องใช้ได้",
+    hub === "funder" ? "ผมช่วยสรุปโจทย์ ความเชี่ยวชาญที่ต้องการ และข้อมูลเทคโนโลยีตัวอย่างได้" : hub === "collaboration" ? "ผมช่วยแนะนำรายการงวดงานและประเด็นที่ต้องหารือในห้องโครงการตัวอย่างได้" : "สวัสดีครับ ผมช่วยตรวจสอบเงื่อนไขทุนและเอกสารที่ต้องใช้ได้",
   ]);
   const [idea, setIdea] = useState("");
   const [matching, setMatching] = useState(false);
@@ -1062,7 +1063,7 @@ export function GovFundMatchApp({ hub }: { hub: WorkspaceHub }) {
     setChatMessages((items) => [
       ...items,
       chatInput.trim(),
-      workspaceHub === "private" ? "โจทย์ควรระบุปัญหา ผลที่ต้องการ และเงื่อนไขการทดลองให้ทีมวิจัยเข้าใจตรงกัน (คำตอบตัวอย่าง)" : workspaceHub === "collaboration" ? "กรุณาระบุหลักฐานส่งมอบ ผู้รับผิดชอบ และประเด็นสิทธิ์ที่ต้องทบทวนก่อนตรวจรับงวดงาน (คำตอบตัวอย่าง)" : "ทุนนี้กำหนดให้แนบแผนงบประมาณและหนังสือรับรองนิติบุคคลครับ",
+      workspaceHub === "funder" ? "โจทย์ควรระบุปัญหา ผลที่ต้องการ และเงื่อนไขการทดลองให้ทีมวิจัยเข้าใจตรงกัน (คำตอบตัวอย่าง)" : workspaceHub === "collaboration" ? "กรุณาระบุหลักฐานส่งมอบ ผู้รับผิดชอบ และประเด็นสิทธิ์ที่ต้องทบทวนก่อนตรวจรับงวดงาน (คำตอบตัวอย่าง)" : "ทุนนี้กำหนดให้แนบแผนงบประมาณและหนังสือรับรองนิติบุคคลครับ",
     ]);
     setChatInput("");
   };
@@ -1107,7 +1108,11 @@ export function GovFundMatchApp({ hub }: { hub: WorkspaceHub }) {
   };
 
   const navItems = [
+    { id: "funding" as Screen, label: "แดชบอร์ดยุทธศาสตร์", icon: Landmark },
+    { id: "research-library" as Screen, label: "ฐานข้อมูลงานวิจัย", icon: Database },
+    { id: "contracts" as Screen, label: "บริหารสัญญาทุน", icon: FileCheck2 },
     { id: "dashboard" as Screen, label: "ภาพรวม", icon: Home },
+    { id: "researchers" as Screen, label: "ฐานข้อมูลนักวิจัย", icon: Users },
     { id: "readiness" as Screen, label: "ตรวจความพร้อม", icon: ClipboardCheck },
     { id: "search" as Screen, label: "ค้นหาทุน", icon: Search },
     { id: "apply" as Screen, label: "ยื่นขอทุน", icon: FileText },
@@ -1121,12 +1126,16 @@ export function GovFundMatchApp({ hub }: { hub: WorkspaceHub }) {
     { id: "integration" as Screen, label: "ข้อมูลกลางและต้นทุน", icon: Database },
   ].filter((item) => hubConfig(workspaceHub).screens.includes(item.id));
   const pageTitle = {
+    funding: "Funder Hub / แดชบอร์ดยุทธศาสตร์",
+    "research-library": "ฐานข้อมูลงานวิจัย",
+    contracts: "บริหารสัญญาและงวดเบิกจ่าย",
+    researchers: "ฐานข้อมูลนักวิจัยแยกรายสาขา",
     dashboard: "ภาพรวมทุนวิจัย",
     readiness: "ตรวจสอบความพร้อมในการยื่นขอทุน",
     search: "AI Smart Match",
     apply: "ยื่นขอทุน",
     tracking: "ติดตามสถานะ",
-    corporate: `Corporate Track / ${hubConfig(workspaceHub).title}`,
+    corporate: `โจทย์จากผู้ให้ทุน / ${hubConfig(workspaceHub).title}`,
     governance: "User Journey & AI Governance",
     semantic: "Semantic Review",
     marketplace: "Research Marketplace",
@@ -1191,7 +1200,7 @@ export function GovFundMatchApp({ hub }: { hub: WorkspaceHub }) {
               <CircleUserRound className="shrink-0" size={32} />
               <div className="min-w-0">
                 <p className="text-[11px] font-bold uppercase tracking-wide text-cyan-300">
-                  {workspaceHub === "researcher" ? "ผู้วิจัย" : workspaceHub === "private" ? "ผู้แทนองค์กร" : "ผู้ร่วมโครงการ"}
+                  {workspaceHub === "researcher" ? "ผู้วิจัย" : workspaceHub === "funder" ? "ผู้แทนองค์กร" : "ผู้ร่วมโครงการ"}
                 </p>
                 <p className="truncate text-sm font-bold">
                   {workspaceHub === "researcher" ? identity.researcherName : identity.registrantName}
@@ -1288,7 +1297,7 @@ export function GovFundMatchApp({ hub }: { hub: WorkspaceHub }) {
                   <br />
                   จำลองอีเมลแจ้งผู้วิจัยและผู้ลงทะเบียน
                 </button>)}
-                {workspaceHub !== "researcher" && <button type="button" onClick={() => navigate(workspaceHub === "private" ? "corporate" : "collaboration")} className="mt-3 w-full rounded-lg bg-blue-50 p-4 text-left text-sm leading-6 text-blue-900">{workspaceHub === "private" ? "ดูโจทย์และผลการแจ้งทีมวิจัยในรอบสาธิต" : "ดูข้อความและรายการงานในห้องโครงการตัวอย่าง"}</button>}
+                {workspaceHub !== "researcher" && <button type="button" onClick={() => navigate(workspaceHub === "funder" ? "corporate" : "collaboration")} className="mt-3 w-full rounded-lg bg-blue-50 p-4 text-left text-sm leading-6 text-blue-900">{workspaceHub === "funder" ? "ดูโจทย์และผลการแจ้งทีมวิจัยในรอบสาธิต" : "ดูข้อความและรายการงานในห้องโครงการตัวอย่าง"}</button>}
 
               </div>
             )}
@@ -1301,7 +1310,7 @@ export function GovFundMatchApp({ hub }: { hub: WorkspaceHub }) {
           <StrategyWorkspace
             hub={workspaceHub}
             focusChallenge={focusedChallenge}
-            active={(["corporate", "governance", "semantic", "marketplace", "impact", "integration", "collaboration"] as string[]).includes(screen) ? screen as StrategyScreen : null}
+            active={(["corporate", "governance", "semantic", "marketplace", "impact", "integration", "collaboration"] as string[]).includes(screen) ? screen as LegacyStrategyScreen : null}
             onNavigate={navigate}
             onNotices={(notices) => setStrategyNotices((items) => [...notices, ...items])}
             onChallenge={(challenge, requestedPublic) => {
@@ -1317,6 +1326,7 @@ export function GovFundMatchApp({ hub }: { hub: WorkspaceHub }) {
               navigate("apply");
             }}
           />
+          <PortfolioWorkspace hub={workspaceHub} screen={screen} />
           {screen === "dashboard" && (
             <div className="mx-auto max-w-7xl">
               <section className="flex flex-col gap-5 border-b border-slate-200 pb-7 md:flex-row md:items-end md:justify-between">

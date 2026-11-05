@@ -3,8 +3,10 @@
 import { createContext, useContext, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
 import type { AppMode, IdentityContext } from "@/src/types/govfund";
 import type { DemoNotice, IndustryChallenge, WorkspaceHub } from "@/src/types/strategy";
+import type { GrantContract } from "@/src/types/funder";
 
 export type StrategySnapshot = {
+  fundingContracts: GrantContract[];
   challenges: IndustryChallenge[];
   pitches: { challenge: string; text: string; file: string }[];
   interests: { asset: string; company: string; type: string; scope: string }[];
