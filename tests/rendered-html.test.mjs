@@ -33,14 +33,37 @@ test("server-renders the Grant+ public funding landing page", async () => {
   assert.match(html, /Grant\+/);
   assert.match(html, /ทุนที่ใช่/);
   assert.match(html, /ข่าวสารทุนล่าสุด/);
-  assert.match(html, /เข้าสู่ระบบด้วย Google/);
-  assert.match(html, /ลงทะเบียนแทน/);
-  assert.match(html, /Simulation mode/);
-  assert.match(html, /โหมดกรอกและบันทึกข้อมูล/);
+  assert.match(html, /href="\/private-sector"/);
+  assert.match(html, /href="\/researcher"/);
+  assert.match(html, /href="\/collaboration"/);
+  assert.doesNotMatch(html, /เปลี่ยนพื้นที่สาธิต/);
   assert.doesNotMatch(
     html,
     /codex-preview|SkeletonPreview|react-loading-skeleton/,
   );
+});
+
+test("each Hub has its own sign-in page without a Hub switcher", async () => {
+  for (const [path, heading] of [["/private-sector", "PRIVATE SECTOR SIGN IN"], ["/researcher", "RESEARCHER HUB"], ["/collaboration", "COLLABORATION SIGN IN"]]) {
+    const response = await render(path);
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, new RegExp(heading));
+    assert.doesNotMatch(html, /เลือกพื้นที่เข้าสู่ระบบ|เปลี่ยนพื้นที่สาธิต/);
+    if (path === "/researcher") {
+      assert.match(html, /เข้าสู่ระบบด้วย Google/);
+      assert.match(html, /ลงทะเบียนแทน/);
+      assert.match(html, /Simulation mode/);
+    } else assert.doesNotMatch(html, /เข้าสู่ระบบด้วย Google|ลงทะเบียนแทน/);
+  }
+});
+
+test("technical integration and cost subpages are separate Admin routes", async () => {
+  for (const path of ["/admin/integration", "/admin/costs"]) {
+    const response = await render(path);
+    assert.equal(response.status, 200);
+    assert.match(await response.text(), /ADMIN CONTROL CENTER/);
+  }
 });
 
 test("server-renders a separate Admin sign-in page", async () => {
@@ -87,7 +110,7 @@ test("keeps the requested Grant+ workflows and mock data in source", async () =>
     "utf8",
   );
 
-  assert.match(page, /GovFundMatchApp/);
+  assert.match(page, /GrantPublicGateway/);
   assert.match(prototype, /เข้าสู่ระบบด้วย Google/);
   assert.match(prototype, /ผู้วิจัยเจ้าของข้อเสนอ/);
   assert.match(prototype, /ผู้ลงทะเบียน\/ผู้ประสานงาน/);

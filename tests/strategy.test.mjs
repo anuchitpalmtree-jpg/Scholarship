@@ -10,6 +10,16 @@ const dataUrl = `data:text/javascript;base64,${Buffer.from(data).toString("base6
 const source = compile(await readFile(new URL("../src/lib/strategy-demo.ts", import.meta.url), "utf8")).replace("@/src/data/strategy-demo-data", dataUrl);
 const { matchingFund, compareSemantic, adjustedImpact, integrationCosts, validateExchange, exchangeSample, matchResearchers } = await import(`data:text/javascript;base64,${Buffer.from(source).toString("base64")}`);
 const { semanticScenarios } = await import(dataUrl);
+const navigationSource = compile(await readFile(new URL("../src/lib/hub-navigation.ts", import.meta.url), "utf8"));
+const { canEnterHub, hubConfig } = await import(`data:text/javascript;base64,${Buffer.from(navigationSource).toString("base64")}`);
+
+test("a signed-in Hub cannot enter a different Hub until logout", () => {
+  const hubs = ["private", "researcher", "collaboration"];
+  for (const active of hubs) for (const requested of hubs) assert.equal(canEnterHub(active, requested), active === requested);
+  for (const requested of hubs) assert.equal(canEnterHub(null, requested), true);
+  assert.ok(!hubConfig("private").screens.includes("collaboration"));
+  assert.ok(!hubConfig("collaboration").screens.includes("marketplace"));
+});
 
 test("co-funding conserves total at both boundaries and clamps invalid ratios", () => {
   for (const ratio of [-10, 0, 40, 100, 120]) {

@@ -2,6 +2,10 @@
 
 import { Dialog } from "@base-ui/react/dialog";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { HubLogin } from "@/src/components/govfund/HubLogin";
+import { useDemoSession } from "@/src/components/govfund/DemoSessionProvider";
 import { useEffect, useMemo, useState } from "react";
 import {
   AlertTriangle,
@@ -55,7 +59,7 @@ import {
 import { PublicChallenges, StrategyWorkspace } from "@/src/components/govfund/StrategyWorkspace";
 import { compareSemantic } from "@/src/lib/strategy-demo";
 import type { DemoNotice, StrategyScreen, WorkspaceHub } from "@/src/types/strategy";
-import { hubs, hubConfig } from "@/src/lib/hub-navigation";
+import { canEnterHub, hubConfig } from "@/src/lib/hub-navigation";
 import {
   GrantProcessJourney,
   grantProcessSteps,
@@ -204,10 +208,6 @@ function Landing({
 }: {
   onLogin: (identity: IdentityContext, mode: AppMode, hub: WorkspaceHub) => Promise<void>;
 }) {
-  const [entryHub, setEntryHub] = useState<WorkspaceHub>("researcher");
-  const [entryOrganization, setEntryOrganization] = useState("บริษัท อาหารก้าวหน้า จำกัด (สมมติ)");
-  const [entryContact, setEntryContact] = useState("คุณเมธา ผู้ประสานงาน (สมมติ)");
-  const entryProject = "GP-DEMO-001";
   const [mode, setMode] = useState<AppMode>("simulation");
   const [role, setRole] = useState<LoginRole>("coordinator");
   const [slide, setSlide] = useState(0);
@@ -362,7 +362,7 @@ function Landing({
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <GrantPlusBrand size="sm" />
-          <a href="/admin" className="ml-auto mr-4 rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 hover:border-blue-600">Admin</a>
+          <Link href="/" className="ml-auto mr-4 rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 hover:border-blue-600">กลับหน้าแรก</Link>
           <div className="hidden items-center gap-2 text-sm font-semibold text-slate-500 sm:flex">
             <ShieldCheck size={18} className="text-blue-800" /> Prototype แบบ 2
             โหมด
@@ -374,7 +374,7 @@ function Landing({
         <div>
           <div className="max-w-3xl">
             <p className="text-sm font-bold tracking-[0.16em] text-blue-800">
-              ONE-STOP RESEARCH FUNDING
+              RESEARCHER HUB
             </p>
             <h1 className="sr-only">Grant+ ทุนที่ใช่ ไปได้ไกลกว่า</h1>
             <GrantPlusBrand size="hero" className="mt-4" />
@@ -499,11 +499,6 @@ function Landing({
 
         <aside id="grant-login" className="lg:pt-24">
           <div className="sticky top-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-7">
-            <p className="text-sm font-bold text-blue-800">เลือกพื้นที่เข้าสู่ระบบ</p>
-            <div className="my-4 grid gap-2" aria-label="เลือก Hub">
-              {hubs.map((hub) => <button key={hub.id} type="button" aria-pressed={entryHub === hub.id} onClick={() => { setEntryHub(hub.id); setLoginError(""); }} className={`rounded-xl border px-4 py-3 text-left ${entryHub === hub.id ? "border-blue-700 bg-blue-50 ring-2 ring-blue-100" : "border-slate-200 hover:border-blue-300"}`}><strong className="block text-sm text-blue-950">{hub.title}</strong><span className="mt-1 block text-xs leading-5 text-slate-500">{hub.detail}</span></button>)}
-            </div>
-            <div hidden={entryHub !== "researcher"}>
             <p className="text-sm font-bold text-blue-800">เลือกวิธีใช้งาน</p>
             <h2 className="mt-1 text-2xl font-black">
               ต้องการทดลองหรือกรอกข้อมูล?
@@ -768,14 +763,7 @@ function Landing({
                 ? "โปรไฟล์และใบสมัครจะบันทึกในฐานข้อมูล ส่วนการยืนยันตัวตนกับหน่วยงานภายนอกยังเป็น Simulation จึงไม่ควรใช้ข้อมูลส่วนบุคคลอ่อนไหว"
                 : "การเข้าสู่ระบบเป็น mock authentication เท่านั้น ยังไม่เชื่อม Google OAuth หรือหน่วยงานภายนอก"}
             </p>
-            </div>
-            {entryHub !== "researcher" && <form className="mt-6 space-y-4 border-t border-slate-200 pt-5" onSubmit={async (event) => { event.preventDefault(); setLoginBusy(true); try { await onLogin({ ...defaultIdentity, registrantName: entryContact, institution: entryHub === "private" ? entryOrganization : "ทีมโครงการตัวอย่าง" }, "simulation", entryHub); } finally { setLoginBusy(false); } }}>
-              <h2 className="text-xl font-black">เข้าสู่ {hubConfig(entryHub).title}</h2>
-              <p className="text-sm leading-6 text-slate-500">ใช้บัญชีและข้อมูลตัวอย่างสำหรับประชุม ยังไม่มีการยืนยันตัวตนหรือสิทธิ์ห้องจริง</p>
-              <label className="block text-sm font-bold">ผู้ติดต่อ / ผู้ร่วมโครงการ<input required value={entryContact} onChange={(event) => setEntryContact(event.target.value)} className="mt-2 min-h-11 w-full rounded-lg border border-slate-300 px-3 text-sm font-normal" /></label>
-              {entryHub === "private" ? <label className="block text-sm font-bold">บริษัท / สมาคม<input required value={entryOrganization} onChange={(event) => setEntryOrganization(event.target.value)} className="mt-2 min-h-11 w-full rounded-lg border border-slate-300 px-3 text-sm font-normal" /></label> : <label className="block text-sm font-bold">รหัสห้องโครงการสาธิต<input readOnly value={entryProject} className="mt-2 min-h-11 w-full rounded-lg border border-slate-300 px-3 text-sm font-normal" /><span className="mt-2 block text-xs font-normal leading-5 text-slate-500">รหัสนี้ใช้แสดงขั้นตอนเท่านั้น ยังไม่ตรวจคำเชิญหรือสิทธิ์เข้าห้อง</span></label>}
-              <button type="submit" disabled={loginBusy} className="flex min-h-12 w-full items-center justify-between rounded-lg bg-[#1E3A8A] px-4 font-bold text-white">เข้าสู่ {hubConfig(entryHub).title} (จำลอง)<ArrowRight size={18} /></button>
-            </form>}
+
           </div>
         </aside>
       </section>
@@ -784,17 +772,19 @@ function Landing({
   );
 }
 
-export function GovFundMatchApp() {
-  const [workspaceHub, setWorkspaceHub] = useState<WorkspaceHub>("researcher");
-  const [identity, setIdentity] = useState<IdentityContext | null>(null);
-  const [appMode, setAppMode] = useState<AppMode>("simulation");
-  const [screen, setScreen] = useState<Screen>("dashboard");
+export function GovFundMatchApp({ hub }: { hub: WorkspaceHub }) {
+  const workspaceHub = hub;
+  const { session, setSession, notices: strategyNotices, setNotices: setStrategyNotices } = useDemoSession();
+  const router = useRouter();
+  const [identity, setIdentity] = useState<IdentityContext | null>(() => session?.hub === hub ? session.identity : null);
+  const [appMode, setAppMode] = useState<AppMode>(session?.hub === hub ? session.mode : "simulation");
+  const [screen, setScreen] = useState<Screen>(hubConfig(hub).start);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState("");
   const [chatMessages, setChatMessages] = useState([
-    "สวัสดีครับ ผมช่วยตรวจสอบเงื่อนไขทุนและเอกสารที่ต้องใช้ได้",
+    hub === "private" ? "ผมช่วยสรุปโจทย์ ความเชี่ยวชาญที่ต้องการ และข้อมูลเทคโนโลยีตัวอย่างได้" : hub === "collaboration" ? "ผมช่วยแนะนำรายการงวดงานและประเด็นที่ต้องหารือในห้องโครงการตัวอย่างได้" : "สวัสดีครับ ผมช่วยตรวจสอบเงื่อนไขทุนและเอกสารที่ต้องใช้ได้",
   ]);
   const [idea, setIdea] = useState("");
   const [matching, setMatching] = useState(false);
@@ -808,7 +798,7 @@ export function GovFundMatchApp() {
   const [acknowledged, setAcknowledged] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const [emailItem, setEmailItem] = useState<ApplicationHistory | null>(null);
-  const [form, setForm] = useState<ApplicationFormData>(simulationForm);
+  const [form, setForm] = useState<ApplicationFormData>(session?.hub === hub && session.mode === "data-entry" ? emptyForm : simulationForm);
   const [savedApplications, setSavedApplications] = useState<
     SavedApplication[]
   >([]);
@@ -816,9 +806,23 @@ export function GovFundMatchApp() {
   const [draftMessage, setDraftMessage] = useState("");
   const [validationMessage, setValidationMessage] = useState("");
   const [databaseBusy, setDatabaseBusy] = useState(false);
-  const [strategyNotices, setStrategyNotices] = useState<DemoNotice[]>([]);
   const [focusedChallenge, setFocusedChallenge] = useState<{ id: string; nonce: number } | null>(null);
   const [navigationMessage, setNavigationMessage] = useState("");
+  const [restoreDatabase] = useState(session?.hub === hub && session.mode === "data-entry");
+  useEffect(() => {
+    if (!restoreDatabase) return;
+    let active = true;
+    setDatabaseBusy(true);
+    loadDatabaseWorkspace().then((workspace) => {
+      if (!active) return;
+      setSavedApplications(workspace.applications);
+      setReviewStage(workspace.reviewStage);
+      setForm(workspace.applications.find((item) => !item.submittedAt)?.form ?? emptyForm);
+    }).catch(() => {
+      if (active) setNavigationMessage("ไม่สามารถโหลดร่างจากฐานข้อมูลได้ กรุณาออกจากระบบและเข้าใช้งานอีกครั้ง");
+    }).finally(() => { if (active) setDatabaseBusy(false); });
+    return () => { active = false; };
+  }, [restoreDatabase]);
   const semanticSummary = useMemo(() => compareSemantic(`${form.projectTitle} ${form.summary}`)[0], [form.projectTitle, form.summary]);
   useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [screen]);
 
@@ -882,17 +886,19 @@ export function GovFundMatchApp() {
       ? [...savedHistory, ...applicationHistory]
       : savedHistory;
 
-  if (!identity) {
-    return (
-      <Landing
-        onLogin={async (nextIdentity, mode, hub) => {
+  const logout = () => {
+    setSession(null);
+    setIdentity(null);
+    setNotificationsOpen(false);
+    router.push("/");
+  };
+  const enterHub = async (nextIdentity: IdentityContext, mode: AppMode) => {
           let workspace = null;
           if (mode === "data-entry") workspace = await loadDatabaseWorkspace();
           setAppMode(mode);
           setIdentity(nextIdentity);
-          setWorkspaceHub(hub);
-          setScreen(hubConfig(hub).start);
-          setStrategyNotices([]);
+          setScreen(hubConfig(workspaceHub).start);
+          setSession({ hub: workspaceHub, identity: nextIdentity, mode });
           setFocusedChallenge(null);
           setNavigationMessage("");
           setDraftMessage("");
@@ -908,30 +914,19 @@ export function GovFundMatchApp() {
             setSavedApplications([]);
             setReviewStage(1);
           }
-        }}
-      />
-    );
-  }
+  };
+  if (!canEnterHub(session?.hub ?? null, workspaceHub)) return <main className="min-h-screen bg-slate-50 p-6"><section className="mx-auto mt-16 max-w-xl rounded-2xl border border-blue-200 bg-white p-7"><h1 className="text-2xl font-black text-blue-950">ออกจากระบบก่อนเปลี่ยน Hub</h1><p className="mt-4 text-sm leading-7 text-slate-600">คุณกำลังใช้ {session ? hubConfig(session.hub).title : "Hub อื่น"} กรุณาออกจากระบบก่อนเลือกพื้นที่ใหม่</p><div className="mt-5 flex flex-wrap gap-3">{session && <Link href={hubConfig(session.hub).path} className="rounded-lg border border-slate-300 px-4 py-3 font-bold">กลับพื้นที่ปัจจุบัน</Link>}<button onClick={logout} className="rounded-lg bg-blue-800 px-4 py-3 font-bold text-white">ออกจากระบบและกลับหน้าแรก</button></div></section></main>;
+  if (!identity) return workspaceHub === "researcher" ? <Landing onLogin={enterHub} /> : <HubLogin hub={workspaceHub} onLogin={(nextIdentity) => enterHub(nextIdentity, "simulation")} />;
 
   const navigate = (next: Screen) => {
     if (!hubConfig(workspaceHub).screens.includes(next)) {
-      if (appMode === "data-entry") {
-        setNavigationMessage("พื้นที่นี้ใช้ข้อมูลสาธิตเฉพาะรอบ กรุณาออกจากโหมดกรอกและบันทึกข้อมูล แล้วเลือก Hub ที่ต้องการจากหน้าเข้าสู่ระบบ");
-        return;
-      }
-      const targetHub = next === "collaboration" || next === "impact" ? "collaboration" : next === "marketplace" ? "private" : "researcher";
-      setWorkspaceHub(targetHub);
+      setNavigationMessage("ส่วนนี้อยู่ใน Hub อื่น กรุณาออกจากระบบและเลือก Hub ใหม่จากหน้าแรก");
+      return;
     }
     setScreen(next);
     setNavigationMessage("");
     setMobileMenu(false);
     setNotificationsOpen(false);
-  };
-  const selectHub = (hub: WorkspaceHub) => {
-    setWorkspaceHub(hub);
-    setScreen(hubConfig(hub).start);
-    setMobileMenu(false);
-    if (appMode === "simulation") setIdentity(hub === "private" ? { ...defaultIdentity, registrantName: "คุณเมธา ผู้ประสานงานบริษัท (สมมติ)", institution: "บริษัท อาหารก้าวหน้า จำกัด (สมมติ)" } : defaultIdentity);
   };
   const runMatch = () => {
     if (!idea.trim()) return;
@@ -1067,7 +1062,7 @@ export function GovFundMatchApp() {
     setChatMessages((items) => [
       ...items,
       chatInput.trim(),
-      "ทุนนี้กำหนดให้แนบแผนงบประมาณและหนังสือรับรองนิติบุคคลครับ",
+      workspaceHub === "private" ? "โจทย์ควรระบุปัญหา ผลที่ต้องการ และเงื่อนไขการทดลองให้ทีมวิจัยเข้าใจตรงกัน (คำตอบตัวอย่าง)" : workspaceHub === "collaboration" ? "กรุณาระบุหลักฐานส่งมอบ ผู้รับผิดชอบ และประเด็นสิทธิ์ที่ต้องทบทวนก่อนตรวจรับงวดงาน (คำตอบตัวอย่าง)" : "ทุนนี้กำหนดให้แนบแผนงบประมาณและหนังสือรับรองนิติบุคคลครับ",
     ]);
     setChatInput("");
   };
@@ -1217,7 +1212,7 @@ export function GovFundMatchApp() {
           </div>
           <button
             type="button"
-            onClick={() => setIdentity(null)}
+            onClick={logout}
             className="mt-2 flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-white/10"
           >
             <LogOut size={18} />
@@ -1278,8 +1273,8 @@ export function GovFundMatchApp() {
                     Simulation
                   </span>
                 </div>
-                {strategyNotices.map((notice) => <button key={notice.id} type="button" onClick={() => { setWorkspaceHub("researcher"); setScreen("corporate"); setFocusedChallenge({ id: notice.challengeId, nonce: Date.now() }); setNotificationsOpen(false); }} className="mt-3 w-full rounded-lg border border-blue-100 bg-blue-50 p-3 text-left"><p className="text-sm font-bold text-blue-900">โจทย์ใหม่: {notice.title}</p><p className="mt-1 text-xs leading-6 text-slate-600">ถึง {notice.researcher}<br />{notice.detail}</p><p className="mt-1 text-xs text-slate-400">แจ้งเตือนภายในรอบสาธิต ยังไม่ส่งอีเมล</p></button>)}
-                <button
+                {strategyNotices.map((notice) => <button key={notice.id} type="button" onClick={() => { setScreen("corporate"); setFocusedChallenge({ id: notice.challengeId, nonce: Date.now() }); setNotificationsOpen(false); }} className="mt-3 w-full rounded-lg border border-blue-100 bg-blue-50 p-3 text-left"><p className="text-sm font-bold text-blue-900">โจทย์ใหม่: {notice.title}</p><p className="mt-1 text-xs leading-6 text-slate-600">ถึง {notice.researcher}<br />{notice.detail}</p><p className="mt-1 text-xs text-slate-400">แจ้งเตือนภายในรอบสาธิต ยังไม่ส่งอีเมล</p></button>)}
+                {workspaceHub === "researcher" && (<button
                   type="button"
                   onClick={() => {
                     setEmailItem(applicationHistory[1]);
@@ -1292,17 +1287,15 @@ export function GovFundMatchApp() {
                   </span>
                   <br />
                   จำลองอีเมลแจ้งผู้วิจัยและผู้ลงทะเบียน
-                </button>
+                </button>)}
+                {workspaceHub !== "researcher" && <button type="button" onClick={() => navigate(workspaceHub === "private" ? "corporate" : "collaboration")} className="mt-3 w-full rounded-lg bg-blue-50 p-4 text-left text-sm leading-6 text-blue-900">{workspaceHub === "private" ? "ดูโจทย์และผลการแจ้งทีมวิจัยในรอบสาธิต" : "ดูข้อความและรายการงานในห้องโครงการตัวอย่าง"}</button>}
+
               </div>
             )}
           </div>
         </header>
 
-        <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
-          <span className="mr-1 text-xs font-bold text-slate-500">เปลี่ยนพื้นที่สาธิต</span>
-          {hubs.map((hub) => <button key={hub.id} type="button" aria-pressed={workspaceHub === hub.id} disabled={appMode === "data-entry" && hub.id !== "researcher"} onClick={() => selectHub(hub.id)} className={`rounded-full px-3 py-2 text-xs font-bold disabled:opacity-40 ${workspaceHub === hub.id ? "bg-blue-800 text-white" : "bg-slate-100 text-slate-600 hover:bg-blue-50"}`}>{hub.title}</button>)}
-          <a href="/admin" target="_blank" rel="noreferrer" className="ml-auto text-xs font-bold text-slate-500 underline underline-offset-4">หน้า Admin แยก</a>
-        </div>
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 bg-white px-4 py-3 text-xs sm:px-6"><strong className="text-blue-800">{hubConfig(workspaceHub).title}</strong><span className="text-slate-500">เปลี่ยน Hub ต้องออกจากระบบก่อน</span></div>
         <main className="p-4 sm:p-6 lg:p-8">
           {navigationMessage && <p role="alert" className="mx-auto mb-5 max-w-7xl rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-7 text-amber-900">{navigationMessage}</p>}
           <StrategyWorkspace
@@ -1326,13 +1319,6 @@ export function GovFundMatchApp() {
           />
           {screen === "dashboard" && (
             <div className="mx-auto max-w-7xl">
-              <section className="mb-6 grid gap-4 xl:grid-cols-3" aria-label="สามส่วนบริการหลัก">
-                {[
-                  { title: "Private Sector Hub", text: "ประกาศโจทย์ ค้นทีมวิจัย และวางแผนร่วมทุน", hub: "private" as WorkspaceHub, icon: Building2 },
-                  { title: "Researcher Hub", text: "ค้นทุน เตรียมข้อเสนอ และแสดงผลงานวิจัย", hub: "researcher" as WorkspaceHub, icon: FlaskConical },
-                  { title: "Collaboration", text: "หารือเงื่อนไข IP ติดตามงวดงานและผลกระทบ", hub: "collaboration" as WorkspaceHub, icon: Users },
-                ].map(({ title, text, hub, icon: Icon }) => <button key={title} disabled={appMode === "data-entry" && hub !== "researcher"} onClick={() => selectHub(hub)} className="rounded-xl border border-blue-200 bg-white p-5 text-left shadow-sm hover:border-blue-600 disabled:opacity-40"><Icon className="text-blue-800" size={24} /><h2 className="mt-3 font-black text-blue-950">{title}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{text}</p><span className="mt-3 inline-flex items-center gap-2 text-xs font-bold text-blue-800">เปิดบริการสาธิต <ArrowRight size={14} /></span></button>)}
-              </section>
               <section className="flex flex-col gap-5 border-b border-slate-200 pb-7 md:flex-row md:items-end md:justify-between">
                 <div>
                   <p className="text-sm font-semibold text-slate-500">

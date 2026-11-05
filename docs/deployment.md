@@ -62,9 +62,9 @@ For production, define database backups, file retention, rollback ownership, and
 
 ## รุ่นสาธิต 5 พฤศจิกายน 2569
 
-- หน้า `/` แยกทางเข้า Private Sector Hub, Researcher Hub และ Collaboration ส่วน `/admin` มีหน้าเข้าสู่ Admin จำลองแยก
+- หน้า `/` มีทางเข้าแยก `/private-sector`, `/researcher`, `/collaboration` เปลี่ยน Hub ต้อง logout ส่วน Admin แยก `/admin`, `/admin/integration` และ `/admin/costs`
 - โมดูลใหม่ใช้ข้อมูลสังเคราะห์ในหน่วยความจำฝั่งผู้ใช้ ไม่ต้องเพิ่ม database/storage value หรือ migration
-- ขอบเขตการเข้าสู่ระบบและสิทธิ์ Hub/Admin ยังเป็น Simulation ต้องตรวจ role/agency/project membership ฝั่งเซิร์ฟเวอร์ก่อนเปิดใช้งานจริง
+- เซสชัน Hub เก็บในหน่วยความจำของ root layout และล้างตัวตนเมื่อ logout ไม่มีการบันทึกตัวตนใน browser storage ขอบเขตการเข้าสู่ระบบและสิทธิ์ Hub/Admin ยังเป็น Simulation ต้องตรวจ role/agency/project membership ฝั่งเซิร์ฟเวอร์ก่อนเปิดใช้งานจริง
 - โหมดบันทึกข้อมูลเดิมของ Researcher Hub ยังคงต้องใช้ DATABASE_URL หรือ POSTGRES_URL เดิมตามเอกสารด้านบน การเผยแพร่ต้นแบบสาธิตไม่ได้เพิ่มค่าฐานข้อมูลให้ Sites
 - การส่งอีเมล การอัปโหลดเนื้อหาไฟล์ วิดีโอคอล สัญญา และการเบิกจ่ายเงินยังไม่เปิดใช้งานจริง
 - รักษา project_id และ audience ของ Sites เดิม คู่มือสาธิตอยู่ใน docs/strategic-review-2026/meeting-guide.md

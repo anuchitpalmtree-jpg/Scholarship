@@ -1,5 +1,5 @@
-import { GovFundMatchApp } from "@/src/components/govfund/GovFundMatchApp";
+import { GrantPublicGateway } from "@/src/components/govfund/GrantPublicGateway";
 
 export default function Home() {
-  return <GovFundMatchApp />;
+  return <GrantPublicGateway />;
 }
