@@ -2,13 +2,13 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-async function render() {
+async function render(pathname = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request("http://localhost/", {
+    new Request(`http://localhost${pathname}`, {
       headers: { accept: "text/html" },
     }),
     {
@@ -41,6 +41,16 @@ test("server-renders the Grant+ public funding landing page", async () => {
     html,
     /codex-preview|SkeletonPreview|react-loading-skeleton/,
   );
+});
+
+test("server-renders a separate Admin sign-in page", async () => {
+  const response = await render("/admin");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /ADMIN CONTROL CENTER/);
+  assert.match(html, /เข้าสู่ระบบผู้ดูแลข้อมูลกลาง/);
+  assert.match(html, /ยังไม่มีการยืนยันสิทธิ์ Admin จริง/);
+  assert.doesNotMatch(html, /ข่าวสารทุนล่าสุด/);
 });
 
 test("keeps the requested Grant+ workflows and mock data in source", async () => {
@@ -87,7 +97,7 @@ test("keeps the requested Grant+ workflows and mock data in source", async () =>
     /Problem,\s+Desirability, Usability, Feasibility หรือ Viability/,
   );
   assert.match(prototype, /ยืนยันและส่งต่อ/);
-  assert.match(prototype, /PMU-B 80%/);
+  assert.match(prototype, /semanticSummary.score/);
   assert.match(prototype, /EMAIL STATUS SIMULATION/);
   assert.match(prototype, /GrantProcessJourney/);
   assert.match(prototype, /บันทึกร่างลงฐานข้อมูล/);

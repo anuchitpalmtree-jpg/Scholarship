@@ -1,0 +1,103 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Grant+ Research Exchange Contract (Draft / Demo)",
+    "version": "0.1-demo",
+    "description": "Proposed contract for discussion. This endpoint is not implemented or connected to a national service. Use synthetic identifiers only."
+  },
+  "servers": [
+    {
+      "url": "https://example.invalid",
+      "description": "Placeholder only; no live API"
+    }
+  ],
+  "paths": {
+    "/research-projects": {
+      "post": {
+        "summary": "Proposed project exchange",
+        "operationId": "exchangeResearchProject",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResearchProject"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Proposed acknowledgement, simulated only"
+          },
+          "400": {
+            "description": "Invalid data contract"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ResearchProject": {
+        "type": "object",
+        "required": [
+          "schemaVersion",
+          "projectId",
+          "agencyId",
+          "title",
+          "fiscalYear",
+          "requestedBudget",
+          "status",
+          "researcherRef",
+          "updatedAt"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "0.1-demo"
+          },
+          "projectId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "agencyId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fiscalYear": {
+            "type": "integer",
+            "minimum": 2500,
+            "maximum": 2700
+          },
+          "requestedBudget": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "submitted",
+              "under_review",
+              "approved",
+              "rejected"
+            ]
+          },
+          "researcherRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  }
+}

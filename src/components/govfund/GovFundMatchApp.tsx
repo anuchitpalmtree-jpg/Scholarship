@@ -52,6 +52,10 @@ import {
   GrantPlusBrand,
   GrantPlusMark,
 } from "@/src/components/govfund/GrantPlusBrand";
+import { PublicChallenges, StrategyWorkspace } from "@/src/components/govfund/StrategyWorkspace";
+import { compareSemantic } from "@/src/lib/strategy-demo";
+import type { DemoNotice, StrategyScreen, WorkspaceHub } from "@/src/types/strategy";
+import { hubs, hubConfig } from "@/src/lib/hub-navigation";
 import {
   GrantProcessJourney,
   grantProcessSteps,
@@ -109,7 +113,7 @@ const dashboardCards = [
   {
     label: "ทุนที่เปิดรับ",
     value: "12",
-    note: "รอบประกาศปัจจุบัน",
+    note: "รอบประกาศตัวอย่าง",
     icon: Landmark,
     color: "text-blue-800 bg-blue-50",
   },
@@ -198,8 +202,12 @@ function statusStyle(status: RequirementItem["status"]) {
 function Landing({
   onLogin,
 }: {
-  onLogin: (identity: IdentityContext, mode: AppMode) => Promise<void>;
+  onLogin: (identity: IdentityContext, mode: AppMode, hub: WorkspaceHub) => Promise<void>;
 }) {
+  const [entryHub, setEntryHub] = useState<WorkspaceHub>("researcher");
+  const [entryOrganization, setEntryOrganization] = useState("บริษัท อาหารก้าวหน้า จำกัด (สมมติ)");
+  const [entryContact, setEntryContact] = useState("คุณเมธา ผู้ประสานงาน (สมมติ)");
+  const entryProject = "GP-DEMO-001";
   const [mode, setMode] = useState<AppMode>("simulation");
   const [role, setRole] = useState<LoginRole>("coordinator");
   const [slide, setSlide] = useState(0);
@@ -291,9 +299,9 @@ function Landing({
         const result = await registerProfile(nextIdentity);
         setRememberedEmail(result.identity.registrantEmail);
         setReturningEmail(result.identity.registrantEmail);
-        await onLogin(result.identity, mode);
+        await onLogin(result.identity, mode, "researcher");
       } else {
-        await onLogin(nextIdentity, mode);
+        await onLogin(nextIdentity, mode, "researcher");
       }
     } catch (error) {
       setLoginError(
@@ -311,7 +319,7 @@ function Landing({
     setLoginError("");
     try {
       const result = await loginWithEmail(returningEmail);
-      await onLogin(result.identity, "data-entry");
+      await onLogin(result.identity, "data-entry", "researcher");
     } catch (error) {
       setLoginError(
         error instanceof GrantApiError
@@ -354,6 +362,7 @@ function Landing({
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <GrantPlusBrand size="sm" />
+          <a href="/admin" className="ml-auto mr-4 rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 hover:border-blue-600">Admin</a>
           <div className="hidden items-center gap-2 text-sm font-semibold text-slate-500 sm:flex">
             <ShieldCheck size={18} className="text-blue-800" /> Prototype แบบ 2
             โหมด
@@ -422,7 +431,7 @@ function Landing({
                 <div className="mb-auto flex flex-wrap items-start justify-between gap-3">
                   <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-3 py-1.5 text-xs font-black text-white shadow-sm">
                     <span className="h-2 w-2 rounded-full bg-white" />{" "}
-                    เปิดรับสมัคร
+                    ข้อมูลรอบทุนตัวอย่าง
                   </span>
                   <span className="rounded-full bg-white/15 px-3 py-1.5 text-xs font-bold backdrop-blur">
                     {grant.deadline}
@@ -488,8 +497,13 @@ function Landing({
           </section>
         </div>
 
-        <aside className="lg:pt-24">
+        <aside id="grant-login" className="lg:pt-24">
           <div className="sticky top-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-7">
+            <p className="text-sm font-bold text-blue-800">เลือกพื้นที่เข้าสู่ระบบ</p>
+            <div className="my-4 grid gap-2" aria-label="เลือก Hub">
+              {hubs.map((hub) => <button key={hub.id} type="button" aria-pressed={entryHub === hub.id} onClick={() => { setEntryHub(hub.id); setLoginError(""); }} className={`rounded-xl border px-4 py-3 text-left ${entryHub === hub.id ? "border-blue-700 bg-blue-50 ring-2 ring-blue-100" : "border-slate-200 hover:border-blue-300"}`}><strong className="block text-sm text-blue-950">{hub.title}</strong><span className="mt-1 block text-xs leading-5 text-slate-500">{hub.detail}</span></button>)}
+            </div>
+            <div hidden={entryHub !== "researcher"}>
             <p className="text-sm font-bold text-blue-800">เลือกวิธีใช้งาน</p>
             <h2 className="mt-1 text-2xl font-black">
               ต้องการทดลองหรือกรอกข้อมูล?
@@ -754,14 +768,24 @@ function Landing({
                 ? "โปรไฟล์และใบสมัครจะบันทึกในฐานข้อมูล ส่วนการยืนยันตัวตนกับหน่วยงานภายนอกยังเป็น Simulation จึงไม่ควรใช้ข้อมูลส่วนบุคคลอ่อนไหว"
                 : "การเข้าสู่ระบบเป็น mock authentication เท่านั้น ยังไม่เชื่อม Google OAuth หรือหน่วยงานภายนอก"}
             </p>
+            </div>
+            {entryHub !== "researcher" && <form className="mt-6 space-y-4 border-t border-slate-200 pt-5" onSubmit={async (event) => { event.preventDefault(); setLoginBusy(true); try { await onLogin({ ...defaultIdentity, registrantName: entryContact, institution: entryHub === "private" ? entryOrganization : "ทีมโครงการตัวอย่าง" }, "simulation", entryHub); } finally { setLoginBusy(false); } }}>
+              <h2 className="text-xl font-black">เข้าสู่ {hubConfig(entryHub).title}</h2>
+              <p className="text-sm leading-6 text-slate-500">ใช้บัญชีและข้อมูลตัวอย่างสำหรับประชุม ยังไม่มีการยืนยันตัวตนหรือสิทธิ์ห้องจริง</p>
+              <label className="block text-sm font-bold">ผู้ติดต่อ / ผู้ร่วมโครงการ<input required value={entryContact} onChange={(event) => setEntryContact(event.target.value)} className="mt-2 min-h-11 w-full rounded-lg border border-slate-300 px-3 text-sm font-normal" /></label>
+              {entryHub === "private" ? <label className="block text-sm font-bold">บริษัท / สมาคม<input required value={entryOrganization} onChange={(event) => setEntryOrganization(event.target.value)} className="mt-2 min-h-11 w-full rounded-lg border border-slate-300 px-3 text-sm font-normal" /></label> : <label className="block text-sm font-bold">รหัสห้องโครงการสาธิต<input readOnly value={entryProject} className="mt-2 min-h-11 w-full rounded-lg border border-slate-300 px-3 text-sm font-normal" /><span className="mt-2 block text-xs font-normal leading-5 text-slate-500">รหัสนี้ใช้แสดงขั้นตอนเท่านั้น ยังไม่ตรวจคำเชิญหรือสิทธิ์เข้าห้อง</span></label>}
+              <button type="submit" disabled={loginBusy} className="flex min-h-12 w-full items-center justify-between rounded-lg bg-[#1E3A8A] px-4 font-bold text-white">เข้าสู่ {hubConfig(entryHub).title} (จำลอง)<ArrowRight size={18} /></button>
+            </form>}
           </div>
         </aside>
       </section>
+      <PublicChallenges />
     </main>
   );
 }
 
 export function GovFundMatchApp() {
+  const [workspaceHub, setWorkspaceHub] = useState<WorkspaceHub>("researcher");
   const [identity, setIdentity] = useState<IdentityContext | null>(null);
   const [appMode, setAppMode] = useState<AppMode>("simulation");
   const [screen, setScreen] = useState<Screen>("dashboard");
@@ -792,6 +816,11 @@ export function GovFundMatchApp() {
   const [draftMessage, setDraftMessage] = useState("");
   const [validationMessage, setValidationMessage] = useState("");
   const [databaseBusy, setDatabaseBusy] = useState(false);
+  const [strategyNotices, setStrategyNotices] = useState<DemoNotice[]>([]);
+  const [focusedChallenge, setFocusedChallenge] = useState<{ id: string; nonce: number } | null>(null);
+  const [navigationMessage, setNavigationMessage] = useState("");
+  const semanticSummary = useMemo(() => compareSemantic(`${form.projectTitle} ${form.summary}`)[0], [form.projectTitle, form.summary]);
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [screen]);
 
   const selectedTemplate =
     fundTemplates.find((template) => template.id === templateId) ??
@@ -856,12 +885,16 @@ export function GovFundMatchApp() {
   if (!identity) {
     return (
       <Landing
-        onLogin={async (nextIdentity, mode) => {
+        onLogin={async (nextIdentity, mode, hub) => {
           let workspace = null;
           if (mode === "data-entry") workspace = await loadDatabaseWorkspace();
           setAppMode(mode);
           setIdentity(nextIdentity);
-          setScreen("dashboard");
+          setWorkspaceHub(hub);
+          setScreen(hubConfig(hub).start);
+          setStrategyNotices([]);
+          setFocusedChallenge(null);
+          setNavigationMessage("");
           setDraftMessage("");
           setValidationMessage("");
           if (mode === "data-entry") {
@@ -881,9 +914,24 @@ export function GovFundMatchApp() {
   }
 
   const navigate = (next: Screen) => {
+    if (!hubConfig(workspaceHub).screens.includes(next)) {
+      if (appMode === "data-entry") {
+        setNavigationMessage("พื้นที่นี้ใช้ข้อมูลสาธิตเฉพาะรอบ กรุณาออกจากโหมดกรอกและบันทึกข้อมูล แล้วเลือก Hub ที่ต้องการจากหน้าเข้าสู่ระบบ");
+        return;
+      }
+      const targetHub = next === "collaboration" || next === "impact" ? "collaboration" : next === "marketplace" ? "private" : "researcher";
+      setWorkspaceHub(targetHub);
+    }
     setScreen(next);
+    setNavigationMessage("");
     setMobileMenu(false);
     setNotificationsOpen(false);
+  };
+  const selectHub = (hub: WorkspaceHub) => {
+    setWorkspaceHub(hub);
+    setScreen(hubConfig(hub).start);
+    setMobileMenu(false);
+    if (appMode === "simulation") setIdentity(hub === "private" ? { ...defaultIdentity, registrantName: "คุณเมธา ผู้ประสานงานบริษัท (สมมติ)", institution: "บริษัท อาหารก้าวหน้า จำกัด (สมมติ)" } : defaultIdentity);
   };
   const runMatch = () => {
     if (!idea.trim()) return;
@@ -1069,13 +1117,27 @@ export function GovFundMatchApp() {
     { id: "search" as Screen, label: "ค้นหาทุน", icon: Search },
     { id: "apply" as Screen, label: "ยื่นขอทุน", icon: FileText },
     { id: "tracking" as Screen, label: "ติดตามสถานะ", icon: FileCheck2 },
-  ];
+    { id: "corporate" as Screen, label: "โจทย์และทีมวิจัย", icon: Building2 },
+    { id: "governance" as Screen, label: "Journey และผู้พิจารณา", icon: ShieldCheck },
+    { id: "semantic" as Screen, label: "ตรวจสาระสำคัญ", icon: Bot },
+    { id: "marketplace" as Screen, label: "Research Marketplace", icon: FlaskConical },
+    { id: "collaboration" as Screen, label: "พื้นที่ร่วมงาน", icon: Users },
+    { id: "impact" as Screen, label: "งวดงานและผลกระทบ", icon: ClipboardCheck },
+    { id: "integration" as Screen, label: "ข้อมูลกลางและต้นทุน", icon: Database },
+  ].filter((item) => hubConfig(workspaceHub).screens.includes(item.id));
   const pageTitle = {
     dashboard: "ภาพรวมทุนวิจัย",
     readiness: "ตรวจสอบความพร้อมในการยื่นขอทุน",
     search: "AI Smart Match",
     apply: "ยื่นขอทุน",
     tracking: "ติดตามสถานะ",
+    corporate: `Corporate Track / ${hubConfig(workspaceHub).title}`,
+    governance: "User Journey & AI Governance",
+    semantic: "Semantic Review",
+    marketplace: "Research Marketplace",
+    collaboration: "Collaboration Workspace",
+    impact: "Prototype & Impact Tracking",
+    integration: "Data Standard & Financial Efficiency",
   }[screen];
 
   return (
@@ -1102,7 +1164,8 @@ export function GovFundMatchApp() {
             <X />
           </button>
         </div>
-        <nav className="flex-1 space-y-1 p-4" aria-label="เมนูหลัก">
+        <p className="border-b border-white/10 px-5 py-3 text-sm font-black text-cyan-200">{hubConfig(workspaceHub).title}</p>
+        <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto p-4" aria-label="เมนูหลัก">
           {navItems.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -1133,10 +1196,10 @@ export function GovFundMatchApp() {
               <CircleUserRound className="shrink-0" size={32} />
               <div className="min-w-0">
                 <p className="text-[11px] font-bold uppercase tracking-wide text-cyan-300">
-                  ผู้วิจัย
+                  {workspaceHub === "researcher" ? "ผู้วิจัย" : workspaceHub === "private" ? "ผู้แทนองค์กร" : "ผู้ร่วมโครงการ"}
                 </p>
                 <p className="truncate text-sm font-bold">
-                  {identity.researcherName}
+                  {workspaceHub === "researcher" ? identity.researcherName : identity.registrantName}
                 </p>
                 <p className="truncate text-xs text-blue-200">
                   {identity.institution}
@@ -1208,13 +1271,14 @@ export function GovFundMatchApp() {
               <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-600" />
             </button>
             {notificationsOpen && (
-              <div className="absolute right-0 top-11 mt-2 w-[min(23rem,calc(100vw-2rem))] rounded-xl border border-slate-200 bg-white p-4 shadow-xl">
+              <div className="absolute right-0 top-11 z-40 mt-2 max-h-[70vh] w-[min(23rem,calc(100vw-2rem))] overflow-y-auto rounded-xl border border-slate-200 bg-white p-4 shadow-xl">
                 <div className="flex items-center justify-between">
                   <p className="font-bold">การแจ้งเตือน</p>
                   <span className="rounded-full bg-violet-50 px-2 py-1 text-xs font-bold text-violet-700">
                     Simulation
                   </span>
                 </div>
+                {strategyNotices.map((notice) => <button key={notice.id} type="button" onClick={() => { setWorkspaceHub("researcher"); setScreen("corporate"); setFocusedChallenge({ id: notice.challengeId, nonce: Date.now() }); setNotificationsOpen(false); }} className="mt-3 w-full rounded-lg border border-blue-100 bg-blue-50 p-3 text-left"><p className="text-sm font-bold text-blue-900">โจทย์ใหม่: {notice.title}</p><p className="mt-1 text-xs leading-6 text-slate-600">ถึง {notice.researcher}<br />{notice.detail}</p><p className="mt-1 text-xs text-slate-400">แจ้งเตือนภายในรอบสาธิต ยังไม่ส่งอีเมล</p></button>)}
                 <button
                   type="button"
                   onClick={() => {
@@ -1234,13 +1298,45 @@ export function GovFundMatchApp() {
           </div>
         </header>
 
+        <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
+          <span className="mr-1 text-xs font-bold text-slate-500">เปลี่ยนพื้นที่สาธิต</span>
+          {hubs.map((hub) => <button key={hub.id} type="button" aria-pressed={workspaceHub === hub.id} disabled={appMode === "data-entry" && hub.id !== "researcher"} onClick={() => selectHub(hub.id)} className={`rounded-full px-3 py-2 text-xs font-bold disabled:opacity-40 ${workspaceHub === hub.id ? "bg-blue-800 text-white" : "bg-slate-100 text-slate-600 hover:bg-blue-50"}`}>{hub.title}</button>)}
+          <a href="/admin" target="_blank" rel="noreferrer" className="ml-auto text-xs font-bold text-slate-500 underline underline-offset-4">หน้า Admin แยก</a>
+        </div>
         <main className="p-4 sm:p-6 lg:p-8">
+          {navigationMessage && <p role="alert" className="mx-auto mb-5 max-w-7xl rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-7 text-amber-900">{navigationMessage}</p>}
+          <StrategyWorkspace
+            hub={workspaceHub}
+            focusChallenge={focusedChallenge}
+            active={(["corporate", "governance", "semantic", "marketplace", "impact", "integration", "collaboration"] as string[]).includes(screen) ? screen as StrategyScreen : null}
+            onNavigate={navigate}
+            onNotices={(notices) => setStrategyNotices((items) => [...notices, ...items])}
+            onChallenge={(challenge, requestedPublic) => {
+              setIdea(challenge.problem);
+              setForm((current) => ({ ...current, projectTitle: challenge.title, budget: requestedPublic.toLocaleString("en-US"), summary: `${challenge.problem}\nผลลัพธ์ที่ต้องการ: ${challenge.target}\nงบโครงการรวม ${challenge.budget.toLocaleString("th-TH")} บาท / เอกชนร่วม ${challenge.privatePercent}% / งบภาครัฐที่คาดขอ ${requestedPublic.toLocaleString("th-TH")} บาท (สมมติ)` }));
+              setSelectedFund(matchedFunds[0]);
+              navigate("apply");
+            }}
+            onProposal={(text) => {
+              setIdea(text);
+              setForm((current) => ({ ...current, summary: text }));
+              setSelectedFund(matchedFunds[0]);
+              navigate("apply");
+            }}
+          />
           {screen === "dashboard" && (
             <div className="mx-auto max-w-7xl">
+              <section className="mb-6 grid gap-4 xl:grid-cols-3" aria-label="สามส่วนบริการหลัก">
+                {[
+                  { title: "Private Sector Hub", text: "ประกาศโจทย์ ค้นทีมวิจัย และวางแผนร่วมทุน", hub: "private" as WorkspaceHub, icon: Building2 },
+                  { title: "Researcher Hub", text: "ค้นทุน เตรียมข้อเสนอ และแสดงผลงานวิจัย", hub: "researcher" as WorkspaceHub, icon: FlaskConical },
+                  { title: "Collaboration", text: "หารือเงื่อนไข IP ติดตามงวดงานและผลกระทบ", hub: "collaboration" as WorkspaceHub, icon: Users },
+                ].map(({ title, text, hub, icon: Icon }) => <button key={title} disabled={appMode === "data-entry" && hub !== "researcher"} onClick={() => selectHub(hub)} className="rounded-xl border border-blue-200 bg-white p-5 text-left shadow-sm hover:border-blue-600 disabled:opacity-40"><Icon className="text-blue-800" size={24} /><h2 className="mt-3 font-black text-blue-950">{title}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{text}</p><span className="mt-3 inline-flex items-center gap-2 text-xs font-bold text-blue-800">เปิดบริการสาธิต <ArrowRight size={14} /></span></button>)}
+              </section>
               <section className="flex flex-col gap-5 border-b border-slate-200 pb-7 md:flex-row md:items-end md:justify-between">
                 <div>
                   <p className="text-sm font-semibold text-slate-500">
-                    วันพฤหัสบดีที่ 24 กันยายน 2569
+                    {new Date().toLocaleDateString("th-TH", { timeZone: "Asia/Bangkok", weekday: "long", day: "numeric", month: "long", year: "numeric" })}
                   </p>
                   <h2 className="mt-1 text-2xl font-black text-slate-950 sm:text-3xl">
                     สวัสดี {identity.registrantName}
@@ -2080,18 +2176,20 @@ export function GovFundMatchApp() {
             </div>
             <div className="p-6">
               <Dialog.Description className="text-lg font-bold leading-8 text-slate-900">
-                ตรวจพบความเสี่ยงการรับทุนซ้ำซ้อน
+                ผลตรวจความใกล้เคียงของสาระ (Simulation)
               </Dialog.Description>
               <p className="mt-3 leading-7 text-slate-600">
-                ข้อเสนอมีความคล้ายกับโครงการที่เคยได้รับทุนจาก{" "}
-                <strong>PMU-B 80%</strong> ระบบจะแจ้งเตือนเพื่อให้ตรวจสอบ
-                แต่ไม่บล็อกการส่งอัตโนมัติ
+                เทียบกับระเบียนสังเคราะห์ “{semanticSummary.record.title}” จาก {semanticSummary.record.agency}
+                ได้ค่าความใกล้เคียงตามกฎสาธิต <strong>{semanticSummary.score}%</strong>
+                {semanticSummary.score >= 60 ? " ควรทบทวนขอบเขตและผลผลิตที่ใกล้กัน" : " ยังไม่พบสัญญาณสูงจากกฎตัวอย่าง แต่ผลนี้ไม่ยืนยันว่าไม่ซ้ำ"}
+                การตรวจนี้ยังไม่ใช่ Deep Semantic AI ที่ผ่านการประเมิน และไม่บล็อกการส่งอัตโนมัติ
               </p>
               <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600">
                 <strong>คำแนะนำ:</strong> ตรวจสอบขอบเขตงาน งบประมาณ
                 และผลผลิตของโครงการเดิม พร้อมอธิบายความแตกต่างในข้อเสนอ
                 ก่อนยืนยันส่งต่อให้แหล่งทุนพิจารณา
               </div>
+              <button type="button" onClick={() => { setWarningOpen(false); navigate("semantic"); }} className="mt-4 text-sm font-bold text-blue-800 underline underline-offset-4">ทดลองเปรียบเทียบสาระรายมิติใน Semantic Review</button>
               <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950">
                 <input
                   type="checkbox"

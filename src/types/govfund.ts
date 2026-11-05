@@ -1,4 +1,6 @@
-export type Screen = "dashboard" | "readiness" | "search" | "apply" | "tracking";
+import type { StrategyScreen } from "./strategy";
+
+export type Screen = "dashboard" | "readiness" | "search" | "apply" | "tracking" | StrategyScreen;
 
 export type AppMode = "simulation" | "data-entry";
 

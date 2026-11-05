@@ -12,8 +12,8 @@ export const publicGrants: PublicGrant[] = [
     agency: "สำนักงานนวัตกรรมแห่งชาติ (NIA)",
     summary:
       "สนับสนุนผู้ประกอบการไทยพัฒนาต้นแบบเชิงพาณิชย์ ทดลองใช้งานกับลูกค้าจริง และทดสอบตลาดผ่านกลไก Open Innovation และ Regional Market Validation",
-    window: "เปิดรับ 23 ก.ย. – 31 ต.ค. 2569",
-    deadline: "เหลือ 37 วัน",
+    window: "รอบตัวอย่าง 23 ก.ย. – 31 ต.ค. 2569 (สิ้นสุดแล้ว)",
+    deadline: "รอบที่ผ่านมา / ข้อมูลสาธิต",
     applicants: 128,
     applicantLabel: "ใบสมัครตัวอย่าง",
     image: "/grants/regional-innovation.jpg",
@@ -28,7 +28,7 @@ export const publicGrants: PublicGrant[] = [
     summary:
       "ตัวอย่างการเปิดรับข้อเสนอด้าน ATMPs ชีววัตถุ จีโนมิกส์ และการแพทย์แม่นยำ เน้นผลผลิตที่นำไปใช้ประโยชน์และเอกสารจริยธรรมที่ครบถ้วน",
     window: "ตัวอย่างรอบเปิดรับ ก.ย. – พ.ย. 2569",
-    deadline: "เหลือ 52 วัน",
+    deadline: "กำหนดการตัวอย่าง",
     applicants: 76,
     applicantLabel: "ใบสมัครตัวอย่าง",
     image: "/grants/health-research.jpg",
@@ -43,7 +43,7 @@ export const publicGrants: PublicGrant[] = [
     summary:
       "ตัวอย่างทุนพัฒนาเทคโนโลยีขั้นแนวหน้าสำหรับอุตสาหกรรมอนาคต ครอบคลุม AI หุ่นยนต์ ระบบอัตโนมัติ และความร่วมมือระหว่างนักวิจัยกับภาคอุตสาหกรรม",
     window: "ตัวอย่างรอบเปิดรับ ก.ย. – 15 พ.ย. 2569",
-    deadline: "เหลือ 49 วัน",
+    deadline: "กำหนดการตัวอย่าง",
     applicants: 214,
     applicantLabel: "ใบสมัครตัวอย่าง",
     image: "/grants/future-industry.jpg",

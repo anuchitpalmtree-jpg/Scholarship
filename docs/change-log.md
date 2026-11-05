@@ -54,3 +54,11 @@
 - Split starter data, record types, display rules, and GovFund workflow screens into dedicated folders.
 - Added Base UI-backed success dialog behavior.
 - Added business-facing specification, operating details, deployment notes, and future-agent instructions.
+# 5 พฤศจิกายน 2569 — ฉบับปรับตามข้อคิดเห็นผู้ทรงคุณวุฒิ
+
+- เพิ่ม Corporate Track, ค้นทีม/โปรไฟล์ห้องแล็บ, ข้อเสนอถึงเอกชน, เงินร่วมทุน และแจ้งเตือนโจทย์จำลอง
+- แยก 3 Hub ตั้งแต่หน้าเข้าสู่ระบบ เมนูตามพื้นที่ และ `/admin` สำหรับข้อมูลกลางและการเชื่อมต่อ
+- เพิ่ม Journey/มติจำลอง, ตรวจแนวคิด 4 มิติพร้อมชี้แจง, Marketplace, Collaboration และติดตามงวดงาน/ผลกระทบ
+- เพิ่ม OpenAPI draft, Data Contract Sandbox, Adapter และตัวคำนวณต้นทุนเชื่อมต่อ/AI
+- โมดูลใหม่ทั้งหมดใช้ข้อมูลสังเคราะห์ในรอบสาธิต ไม่มีการเปลี่ยน schema ฐานข้อมูลหรือ migration
+- ปรับสไลด์ทั้งชุด 28 หน้า โดยยึดฉบับนำเสนอ 4 พฤศจิกายนและแยกฐานงบ 33.6 ล้านบาท/ค่าเชื่อม 7 ล้านบาทให้ตรงแหล่งข้อมูล
