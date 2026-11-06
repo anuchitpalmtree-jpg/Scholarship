@@ -1,5 +1,9 @@
 # Grant+ Change Log
 
+## 2026-11-06 — Journey text contrast
+
+- Fixed the shared governance callout's conflicting white/navy background utilities. The dark panel now selects one background explicitly, keeping the heading and explanatory text readable in every Hub.
+
 ## 2026-11-05 — Funder portfolio, contracts, and researcher directory
 
 - Renamed the public/private funding portal to Funder Hub at `/funder`, redirecting the old URL and preserving logout-only Hub changes.
